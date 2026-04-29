@@ -791,13 +791,14 @@
     <div class="inner">
       <p class="label-step">21 / 24</p>
       <h2 class="q-title">Qual investimento mensal você está considerando?</h2>
-      <p class="q-sub">Gestão estratégica + mídia paga &nbsp;·&nbsp; <span style="color:var(--dourado)">Mínimo recomendado: R$ 15k/mês</span></p>
+      <p class="q-sub">Gestão estratégica + mídia paga &nbsp;·&nbsp; <span style="color:var(--dourado)">Mínimo recomendado: R$ 1.500/mês</span></p>
       <div class="choices two" id="c21">
-        <div class="card" onclick="pick(21,'R$ 15k – R$ 30k/mês',this)"><span class="card-letter">A</span><div class="card-text">R$ 15k – R$ 30k/mês</div></div>
-        <div class="card" onclick="pick(21,'R$ 30k – R$ 60k/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 30k – R$ 60k/mês</div></div>
-        <div class="card" onclick="pick(21,'R$ 60k – R$ 100k/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 60k – R$ 100k/mês</div></div>
-        <div class="card" onclick="pick(21,'Acima de R$ 100k/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 100k/mês</div></div>
-        <div class="card" onclick="pick(21,'Ainda estou avaliando',this)"><span class="card-letter">E</span><div class="card-text">Ainda estou avaliando</div></div>
+        <div class="card" onclick="pick(21,'R$ 1.500 – R$ 3.000/mês',this)"><span class="card-letter">A</span><div class="card-text">R$ 1.500 – R$ 3.000/mês</div></div>
+        <div class="card" onclick="pick(21,'R$ 3.000 – R$ 6.000/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 3.000 – R$ 6.000/mês</div></div>
+        <div class="card" onclick="pick(21,'R$ 6.000 – R$ 12.000/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 6.000 – R$ 12.000/mês</div></div>
+        <div class="card" onclick="pick(21,'R$ 12.000 – R$ 25.000/mês',this)"><span class="card-letter">D</span><div class="card-text">R$ 12.000 – R$ 25.000/mês</div></div>
+        <div class="card" onclick="pick(21,'Acima de R$ 25.000/mês',this)"><span class="card-letter">E</span><div class="card-text">Acima de R$ 25.000/mês</div></div>
+        <div class="card" onclick="pick(21,'Ainda estou avaliando',this)"><span class="card-letter">F</span><div class="card-text">Ainda estou avaliando</div></div>
       </div>
     </div>
   </div>
@@ -1176,7 +1177,7 @@ function pickDate(date){
       list.querySelectorAll('.ts-slot').forEach(x=>x.classList.remove('sel'));
       s.classList.add('sel');
       selTime = t;
-      document.getElementById('b13').disabled = false;
+      document.getElementById('b25').disabled = false;
     });
     list.appendChild(s);
   });
