@@ -396,13 +396,82 @@
     @keyframes spinStar { to { transform: rotate(360deg); } }
 
     /* ── RESPONSIVE ───────────────────────────────── */
-    @media (max-width: 520px) {
-      #logoWrap { left: 20px; top: 20px; }
-      #stepCounter { right: 20px; top: 20px; }
-      #formWrap { padding: 68px 12px 48px; }
-      .step { padding: 0; }
-      .choices, .choices.two, .choices.three { grid-template-columns: 1fr; }
-      .choices.two { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 600px) {
+      /* Layout base */
+      html, body { overflow: hidden; }
+      #logoWrap  { left: 18px; top: 18px; }
+      #stepCounter { right: 18px; top: 20px; font-size: 11px; }
+      #formWrap  { padding: 60px 20px 52px; }
+      .step      { padding: 0; }
+
+      /* Scroll interno usa dvh para respeitar a barra do browser */
+      .inner { max-height: calc(100dvh - 130px); }
+
+      /* Rótulo do step */
+      .label-step { font-size: 10px; margin-bottom: 12px; }
+
+      /* Título da pergunta — maior e mais legível */
+      .q-title {
+        font-size: clamp(22px, 6.5vw, 30px) !important;
+        line-height: 1.25;
+        margin-bottom: 8px;
+      }
+
+      /* Subtítulo */
+      .q-sub { font-size: 13px; line-height: 1.55; margin-bottom: 22px; }
+
+      /* Inputs de texto */
+      .txt-input {
+        font-size: 18px !important;
+        padding: 12px 0;
+      }
+      textarea.txt-input {
+        font-size: 14px !important;
+        height: 108px;
+      }
+
+      /* Cards — coluna única por padrão */
+      .choices,
+      .choices.two,
+      .choices.three { grid-template-columns: 1fr; gap: 8px; margin-bottom: 20px; }
+      /* Dois por linha apenas quando explicitamente two e não three */
+      .choices.two   { grid-template-columns: 1fr 1fr; }
+
+      .card { padding: 14px 16px; }
+      .card-text { font-size: 13.5px; line-height: 1.4; }
+      .card-letter { width: 20px; height: 20px; font-size: 9px; margin-bottom: 8px; }
+
+      /* Botão — largura total, mais fácil de tocar */
+      .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 17px 24px;
+        font-size: 11px;
+        margin-top: 22px;
+      }
+      .hint { font-size: 10px; margin-top: 8px; }
+
+      /* Tela de boas-vindas */
+      .welcome-star { margin-bottom: 32px; }
+      .welcome-title { font-size: clamp(26px, 7.5vw, 34px) !important; }
+      .welcome-body  { font-size: 14px; line-height: 1.65; margin-bottom: 32px; }
+      .welcome-meta  { font-size: 10px; }
+
+      /* Calendário — já colapsa em coluna única */
+      .cal-wrapper { grid-template-columns: 1fr; gap: 22px; }
+      .cal-day { font-size: 13px; }
+      .cal-month { font-size: 12px; }
+      .ts-slot { padding: 14px 14px; font-size: 14px; }
+      .ts-title { font-size: 10px; }
+
+      /* Hint de navegação */
+      #navHint { font-size: 10px; bottom: 16px; gap: 8px; }
+
+      /* Confirmação final */
+      .ty-title { font-size: clamp(24px, 7vw, 32px) !important; }
+      .ty-sub   { font-size: 13px; }
+      .summary-box { padding: 20px 20px; }
+      .sum-row  { font-size: 13px; }
     }
   </style>
 </head>
