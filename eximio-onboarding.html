@@ -402,27 +402,45 @@
       #logoWrap    { left: 18px; top: 18px; }
       #stepCounter { right: 18px; top: 20px; font-size: 11px; }
 
-      /* Container usa dvh para respeitar barra do browser */
-      #formWrap { height: 100dvh; padding: 0; }
+      /* Container: ocupa tela toda, sem flex (steps se auto-posicionam) */
+      #formWrap {
+        height: 100dvh;
+        padding: 0;
+        display: block;
+      }
 
-      /* Centramento explícito via translate — confiável em todos os mobile browsers */
+      /* Cada step ocupa a tela inteira e centraliza o conteúdo por dentro */
       .step {
-        top: 50%; left: 50%;
-        transform: translate(-50%, calc(-50% + 36px));
-        padding: 0 22px;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
         width: 100%;
         max-width: 100%;
+        padding: 70px 22px 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         box-sizing: border-box;
+        transform: translateY(36px);
       }
-      .step.active { opacity: 1; transform: translate(-50%, -50%); }
-      .step.exit   { opacity: 0; transform: translate(-50%, calc(-50% - 36px)); }
+      .step.active { opacity: 1; transform: translateY(0); }
+      .step.exit   { opacity: 0; transform: translateY(-36px); }
 
       /* Scroll interno */
-      .inner { max-height: calc(100dvh - 120px); }
+      .inner {
+        width: 100%;
+        max-height: calc(100dvh - 126px);
+        overflow-y: auto;
+      }
 
-      /* Telas welcome e confirmação — centram o próprio inner */
+      /* Telas welcome e confirmação */
       #step-0 .inner,
-      #step-26 .inner { min-height: calc(100dvh - 120px); }
+      #step-26 .inner {
+        min-height: calc(100dvh - 126px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
 
       /* Rótulo do step */
       .label-step { font-size: 10px; margin-bottom: 12px; }
