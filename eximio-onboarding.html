@@ -397,52 +397,18 @@
 
     /* ── RESPONSIVE ───────────────────────────────── */
     @media (max-width: 600px) {
-      /* Layout base */
+      /* Layout base — dimensões são aplicadas via JS (applyMobileLayout) */
       html, body { overflow: hidden; }
       #logoWrap    { left: 18px; top: 18px; }
       #stepCounter { right: 18px; top: 20px; font-size: 11px; }
 
-      /* --app-height é setada via JS com window.innerHeight real do Chrome */
-      #formWrap {
-        height: var(--app-height, 100svh);
-        padding: 0;
-        display: block;
-        position: relative;
-      }
-
-      /* Cada step ocupa o container inteiro e centraliza por dentro */
-      .step {
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: var(--app-height, 100svh);
-        width: 100%;
-        max-width: 100%;
-        padding: 70px 22px 56px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-        transform: translateY(36px);
-      }
-      .step.active { opacity: 1; transform: translateY(0); }
-      .step.exit   { opacity: 0; transform: translateY(-36px); }
+      /* Animações de entrada/saída — transform e opacity ficam no CSS */
+      .step.active { opacity: 1 !important; transform: translateY(0) !important; }
+      .step.exit   { opacity: 0 !important; transform: translateY(-36px) !important; }
 
       /* Scroll interno */
-      .inner {
-        width: 100%;
-        max-height: calc(var(--app-height, 100svh) - 126px);
-        overflow-y: auto;
-      }
-
-      /* Telas welcome e confirmação */
-      #step-0 .inner,
-      #step-26 .inner {
-        min-height: calc(var(--app-height, 100svh) - 126px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
+      .inner { scrollbar-width: none; }
+      .inner::-webkit-scrollbar { display: none; }
 
       /* Rótulo do step */
       .label-step { font-size: 10px; margin-bottom: 12px; }
@@ -1412,16 +1378,69 @@ document.addEventListener('keydown', e=>{
 });
 
 /* ═══════════════════════════════════════════════════
-   FIX VIEWPORT HEIGHT — Chrome Android
-   window.innerHeight retorna a altura visível real,
-   excluindo a barra de endereços. Resolve o bug do
-   Chrome que conta a barra no 100vh/100dvh.
+   FIX LAYOUT MOBILE — Chrome Android
+   Aplica dimensões em pixels via style inline (maior
+   especificidade que qualquer regra CSS), evitando o
+   bug do Chrome que inclui a barra de endereços no
+   cálculo de 100vh / 100dvh / 100svh.
 ═══════════════════════════════════════════════════ */
-function setAppHeight(){
-  document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
-}
-setAppHeight();
-window.addEventListener('resize', setAppHeight);
+(function(){
+  function applyMobileLayout(){
+    if(window.innerWidth > 600) return;
+    var vh = window.innerHeight;
+    var pad = 126; // top(70) + bottom(56)
+
+    // #formWrap — container principal
+    var fw = document.getElementById('formWrap');
+    if(fw){
+      fw.style.height   = vh + 'px';
+      fw.style.padding  = '0';
+      fw.style.display  = 'block';
+      fw.style.position = 'relative';
+    }
+
+    // Cada .step — ocupa todo o container e centraliza conteúdo
+    document.querySelectorAll('.step').forEach(function(s){
+      s.style.position      = 'absolute';
+      s.style.top           = '0';
+      s.style.left          = '0';
+      s.style.right         = '0';
+      s.style.height        = vh + 'px';
+      s.style.width         = '100%';
+      s.style.maxWidth      = '100%';
+      s.style.padding       = '70px 22px 56px';
+      s.style.display       = 'flex';
+      s.style.alignItems    = 'center';
+      s.style.justifyContent= 'center';
+      s.style.boxSizing     = 'border-box';
+    });
+
+    // .inner — scroll interno com altura máxima real
+    document.querySelectorAll('.inner').forEach(function(i){
+      i.style.width     = '100%';
+      i.style.maxHeight = (vh - pad) + 'px';
+      i.style.overflowY = 'auto';
+    });
+
+    // Telas welcome e confirmação — centralizam verticalmente
+    ['step-0','step-26'].forEach(function(id){
+      var el = document.querySelector('#' + id + ' .inner');
+      if(el){
+        el.style.display        = 'flex';
+        el.style.flexDirection  = 'column';
+        el.style.alignItems     = 'center';
+        el.style.justifyContent = 'center';
+        el.style.minHeight      = (vh - pad) + 'px';
+      }
+    });
+  }
+
+  applyMobileLayout();
+  window.addEventListener('resize', applyMobileLayout);
+  window.addEventListener('orientationchange', function(){
+    setTimeout(applyMobileLayout, 150);
+  });
+})();
 
 /* ═══════════════════════════════════════════════════
    INIT
