@@ -292,8 +292,8 @@
     .ts-dur { font-size: 11px; color: var(--text-muted); }
 
     /* ── TELA FINAL ───────────────────────────────── */
-    #step-14 { text-align: center; }
-    #step-14 .inner {
+    #step-26 { text-align: center; }
+    #step-26 .inner {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; min-height: calc(100vh - 160px);
     }
@@ -473,14 +473,14 @@
       <div class="welcome-cta">
         <button class="btn" onclick="goTo(1)">Começar <span class="arr">→</span></button>
       </div>
-      <p class="welcome-meta">Aproximadamente 4 minutos &nbsp;·&nbsp; 12 perguntas</p>
+      <p class="welcome-meta">Aproximadamente 10 minutos &nbsp;·&nbsp; 24 perguntas</p>
     </div>
   </div>
 
   <!-- ░░ STEP 1 — NOME ░░ -->
   <div class="step" id="step-1">
     <div class="inner">
-      <p class="label-step">01 / 12</p>
+      <p class="label-step">01 / 24</p>
       <h2 class="q-title">Qual é o seu nome?</h2>
       <input class="txt-input" id="i-nome" type="text" placeholder="Seu nome completo" autocomplete="off" spellcheck="false" />
       <div>
@@ -495,7 +495,7 @@
   <!-- ░░ STEP 2 — EMPRESA ░░ -->
   <div class="step" id="step-2">
     <div class="inner">
-      <p class="label-step">02 / 12</p>
+      <p class="label-step">02 / 24</p>
       <h2 class="q-title">Como se chama a sua empresa?</h2>
       <input class="txt-input" id="i-empresa" type="text" placeholder="Nome da empresa" autocomplete="off" spellcheck="false" />
       <div>
@@ -510,7 +510,7 @@
   <!-- ░░ STEP 3 — CARGO ░░ -->
   <div class="step" id="step-3">
     <div class="inner">
-      <p class="label-step">03 / 12</p>
+      <p class="label-step">03 / 24</p>
       <h2 class="q-title">Qual é o seu cargo?</h2>
       <input class="txt-input" id="i-cargo" type="text" placeholder="CEO, Sócio, Diretor Comercial..." autocomplete="off" spellcheck="false" />
       <div>
@@ -522,151 +522,332 @@
     </div>
   </div>
 
-  <!-- ░░ STEP 4 — SEGMENTO ░░ -->
+  <!-- ░░ STEP 4 — E-MAIL ░░ -->
   <div class="step" id="step-4">
     <div class="inner">
-      <p class="label-step">04 / 12</p>
-      <h2 class="q-title">Em qual segmento você atua?</h2>
-      <p class="q-sub">Escolha o que melhor representa seu negócio</p>
-      <div class="choices" id="c4">
-        <div class="card" onclick="pick(4,'Jurídico / Advocacia',this)"><span class="card-letter">A</span><div class="card-text">Jurídico / Advocacia</div></div>
-        <div class="card" onclick="pick(4,'Saúde / Medicina',this)"><span class="card-letter">B</span><div class="card-text">Saúde / Medicina</div></div>
-        <div class="card" onclick="pick(4,'Tecnologia / SaaS',this)"><span class="card-letter">C</span><div class="card-text">Tecnologia / SaaS</div></div>
-        <div class="card" onclick="pick(4,'Serviços B2B',this)"><span class="card-letter">D</span><div class="card-text">Serviços B2B</div></div>
-        <div class="card" onclick="pick(4,'Varejo / E-commerce',this)"><span class="card-letter">E</span><div class="card-text">Varejo / E-commerce</div></div>
-        <div class="card" onclick="pick(4,'Educação / Infoprodutos',this)"><span class="card-letter">F</span><div class="card-text">Educação / Infoprodutos</div></div>
-        <div class="card" onclick="pick(4,'Imóveis / Construção',this)"><span class="card-letter">G</span><div class="card-text">Imóveis / Construção</div></div>
-        <div class="card" onclick="pick(4,'Outro segmento',this)"><span class="card-letter">H</span><div class="card-text">Outro segmento</div></div>
+      <p class="label-step">04 / 24</p>
+      <h2 class="q-title">Qual é o seu e-mail de contato?</h2>
+      <input class="txt-input" id="i-email" type="email" placeholder="seu@email.com.br" autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b4" onclick="advance(4,'i-email',5)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 5 — FATURAMENTO ░░ -->
+  <!-- ░░ STEP 5 — SEGMENTO ░░ -->
   <div class="step" id="step-5">
     <div class="inner">
-      <p class="label-step">05 / 12</p>
-      <h2 class="q-title">Qual é o faturamento mensal da sua empresa?</h2>
-      <p class="q-sub">Isso nos ajuda a calibrar a estratégia ideal</p>
-      <div class="choices two" id="c5">
-        <div class="card" onclick="pick(5,'Até R$ 30 mil/mês',this)"><span class="card-letter">A</span><div class="card-text">Até R$ 30 mil/mês</div></div>
-        <div class="card" onclick="pick(5,'R$ 30k – R$ 100k/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 30k – R$ 100k/mês</div></div>
-        <div class="card" onclick="pick(5,'R$ 100k – R$ 500k/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 100k – R$ 500k/mês</div></div>
-        <div class="card" onclick="pick(5,'Acima de R$ 500k/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 500k/mês</div></div>
-        <div class="card" onclick="pick(5,'Prefiro não informar',this)"><span class="card-letter">E</span><div class="card-text">Prefiro não informar</div></div>
+      <p class="label-step">05 / 24</p>
+      <h2 class="q-title">Em qual segmento você atua?</h2>
+      <p class="q-sub">Escolha o que melhor representa seu negócio</p>
+      <div class="choices" id="c5">
+        <div class="card" onclick="pick(5,'Jurídico / Advocacia',this)"><span class="card-letter">A</span><div class="card-text">Jurídico / Advocacia</div></div>
+        <div class="card" onclick="pick(5,'Saúde / Medicina',this)"><span class="card-letter">B</span><div class="card-text">Saúde / Medicina</div></div>
+        <div class="card" onclick="pick(5,'Tecnologia / SaaS',this)"><span class="card-letter">C</span><div class="card-text">Tecnologia / SaaS</div></div>
+        <div class="card" onclick="pick(5,'Serviços B2B',this)"><span class="card-letter">D</span><div class="card-text">Serviços B2B</div></div>
+        <div class="card" onclick="pick(5,'Varejo / E-commerce',this)"><span class="card-letter">E</span><div class="card-text">Varejo / E-commerce</div></div>
+        <div class="card" onclick="pick(5,'Educação / Infoprodutos',this)"><span class="card-letter">F</span><div class="card-text">Educação / Infoprodutos</div></div>
+        <div class="card" onclick="pick(5,'Imóveis / Construção',this)"><span class="card-letter">G</span><div class="card-text">Imóveis / Construção</div></div>
+        <div class="card" onclick="pick(5,'Outro segmento',this)"><span class="card-letter">H</span><div class="card-text">Outro segmento</div></div>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 6 — DESAFIO ░░ -->
+  <!-- ░░ STEP 6 — FATURAMENTO ░░ -->
   <div class="step" id="step-6">
     <div class="inner">
-      <p class="label-step">06 / 12</p>
-      <h2 class="q-title">Qual é o seu maior desafio hoje?</h2>
-      <p class="q-sub">Seja honesto — isso define o que vamos priorizar juntos</p>
-      <div class="choices" id="c6">
-        <div class="card" onclick="pick(6,'Gerar leads qualificados',this)"><span class="card-letter">A</span><div class="card-text">Gerar leads qualificados</div></div>
-        <div class="card" onclick="pick(6,'Construir autoridade no mercado',this)"><span class="card-letter">B</span><div class="card-text">Construir autoridade no mercado</div></div>
-        <div class="card" onclick="pick(6,'Escalar vendas de forma previsível',this)"><span class="card-letter">C</span><div class="card-text">Escalar vendas de forma previsível</div></div>
-        <div class="card" onclick="pick(6,'Estruturar presença digital do zero',this)"><span class="card-letter">D</span><div class="card-text">Estruturar presença digital do zero</div></div>
-        <div class="card" onclick="pick(6,'Tráfego pago mal gerenciado',this)"><span class="card-letter">E</span><div class="card-text">Tráfego pago mal gerenciado</div></div>
-        <div class="card" onclick="pick(6,'Falta de estratégia clara',this)"><span class="card-letter">F</span><div class="card-text">Falta de estratégia clara</div></div>
+      <p class="label-step">06 / 24</p>
+      <h2 class="q-title">Qual é o faturamento mensal da sua empresa?</h2>
+      <p class="q-sub">Isso nos ajuda a calibrar a estratégia ideal</p>
+      <div class="choices two" id="c6">
+        <div class="card" onclick="pick(6,'Até R$ 30 mil/mês',this)"><span class="card-letter">A</span><div class="card-text">Até R$ 30 mil/mês</div></div>
+        <div class="card" onclick="pick(6,'R$ 30k – R$ 100k/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 30k – R$ 100k/mês</div></div>
+        <div class="card" onclick="pick(6,'R$ 100k – R$ 500k/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 100k – R$ 500k/mês</div></div>
+        <div class="card" onclick="pick(6,'Acima de R$ 500k/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 500k/mês</div></div>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 7 — OBJETIVOS (múltiplos) ░░ -->
+  <!-- ░░ STEP 7 — MOMENTO ATUAL ░░ -->
   <div class="step" id="step-7">
     <div class="inner">
-      <p class="label-step">07 / 12</p>
-      <h2 class="q-title">O que você espera alcançar com a EXÍMIO?</h2>
-      <p class="q-sub">Selecione tudo que se aplica — pode marcar mais de um</p>
-      <div class="choices" id="c7">
-        <div class="card" onclick="multi(7,'Aumentar volume de leads',this)"><span class="card-letter">A</span><div class="card-text">Aumentar volume de leads</div></div>
-        <div class="card" onclick="multi(7,'Melhorar qualidade dos leads',this)"><span class="card-letter">B</span><div class="card-text">Melhorar qualidade dos leads</div></div>
-        <div class="card" onclick="multi(7,'Construir autoridade e reputação',this)"><span class="card-letter">C</span><div class="card-text">Construir autoridade e reputação</div></div>
-        <div class="card" onclick="multi(7,'Profissionalizar a comunicação',this)"><span class="card-letter">D</span><div class="card-text">Profissionalizar a comunicação</div></div>
-        <div class="card" onclick="multi(7,'Ter previsibilidade de resultados',this)"><span class="card-letter">E</span><div class="card-text">Ter previsibilidade de resultados</div></div>
-        <div class="card" onclick="multi(7,'Expandir para novos mercados',this)"><span class="card-letter">F</span><div class="card-text">Expandir para novos mercados</div></div>
+      <p class="label-step">07 / 24</p>
+      <h2 class="q-title">Qual é o momento atual do seu negócio?</h2>
+      <p class="q-sub">Escolha a opção que melhor descreve a sua situação</p>
+      <div class="choices one" id="c7">
+        <div class="card" onclick="pick(7,'Estagnado — sem crescimento visível',this)"><span class="card-letter">A</span><div class="card-text">Estagnado — sem crescimento visível</div></div>
+        <div class="card" onclick="pick(7,'Crescimento leve — avançando de forma gradual',this)"><span class="card-letter">B</span><div class="card-text">Crescimento leve — avançando de forma gradual</div></div>
+        <div class="card" onclick="pick(7,'Crescimento acelerado — demanda alta, estrutura se ajustando',this)"><span class="card-letter">C</span><div class="card-text">Crescimento acelerado — demanda alta, estrutura se ajustando</div></div>
+        <div class="card" onclick="pick(7,'Em queda — faturamento ou clientes em declínio',this)"><span class="card-letter">D</span><div class="card-text">Em queda — faturamento ou clientes em declínio</div></div>
       </div>
-      <button class="btn" id="b7" onclick="goTo(8)" disabled>Continuar <span class="arr">→</span></button>
     </div>
   </div>
 
-  <!-- ░░ STEP 8 — IDENTIDADE VISUAL ░░ -->
+  <!-- ░░ STEP 8 — DESAFIO ░░ -->
   <div class="step" id="step-8">
     <div class="inner">
-      <p class="label-step">08 / 12</p>
-      <h2 class="q-title">Você já possui identidade visual?</h2>
-      <p class="q-sub">Logo, cores, tipografia, manual de marca...</p>
-      <div class="choices three" id="c8">
-        <div class="card" onclick="pick(8,'Sim, completa',this)"><span class="card-letter">A</span><div class="card-text">Sim, completa</div></div>
-        <div class="card" onclick="pick(8,'Parcial / em desenvolvimento',this)"><span class="card-letter">B</span><div class="card-text">Parcial / em desenvolvimento</div></div>
-        <div class="card" onclick="pick(8,'Ainda não possuo',this)"><span class="card-letter">C</span><div class="card-text">Ainda não possuo</div></div>
+      <p class="label-step">08 / 24</p>
+      <h2 class="q-title">Qual é o seu maior desafio hoje?</h2>
+      <p class="q-sub">Seja honesto — isso define o que vamos priorizar juntos</p>
+      <div class="choices" id="c8">
+        <div class="card" onclick="pick(8,'Gerar leads qualificados',this)"><span class="card-letter">A</span><div class="card-text">Gerar leads qualificados</div></div>
+        <div class="card" onclick="pick(8,'Construir autoridade no mercado',this)"><span class="card-letter">B</span><div class="card-text">Construir autoridade no mercado</div></div>
+        <div class="card" onclick="pick(8,'Escalar vendas de forma previsível',this)"><span class="card-letter">C</span><div class="card-text">Escalar vendas de forma previsível</div></div>
+        <div class="card" onclick="pick(8,'Estruturar presença digital do zero',this)"><span class="card-letter">D</span><div class="card-text">Estruturar presença digital do zero</div></div>
+        <div class="card" onclick="pick(8,'Tráfego pago mal gerenciado',this)"><span class="card-letter">E</span><div class="card-text">Tráfego pago mal gerenciado</div></div>
+        <div class="card" onclick="pick(8,'Falta de estratégia clara',this)"><span class="card-letter">F</span><div class="card-text">Falta de estratégia clara</div></div>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 9 — SITE ░░ -->
+  <!-- ░░ STEP 9 — META SMART ░░ -->
   <div class="step" id="step-9">
     <div class="inner">
-      <p class="label-step">09 / 12</p>
-      <h2 class="q-title">Você tem site ou landing page ativa?</h2>
-      <div class="choices three" id="c9">
-        <div class="card" onclick="pick(9,'Sim, funcionando bem',this)"><span class="card-letter">A</span><div class="card-text">Sim, funcionando bem</div></div>
-        <div class="card" onclick="pick(9,'Sim, mas precisa melhorar',this)"><span class="card-letter">B</span><div class="card-text">Sim, mas precisa melhorar</div></div>
-        <div class="card" onclick="pick(9,'Não tenho ainda',this)"><span class="card-letter">C</span><div class="card-text">Não tenho ainda</div></div>
+      <p class="label-step">09 / 24</p>
+      <h2 class="q-title">Qual é o seu principal objetivo com este projeto?</h2>
+      <p class="q-sub">Defina uma meta concreta: o que quer atingir e em quanto tempo.<br><span style="color:var(--dourado);font-style:italic;">Ex.: Sair de R$ 20k e atingir R$ 40k mensais em 6 meses.</span></p>
+      <textarea class="txt-input" id="i-meta" placeholder="Minha meta é..." style="height:120px;"></textarea>
+      <div>
+        <button class="btn" id="b9" onclick="advanceTxt('i-meta',10)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Shift+Enter para nova linha</p>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 10 — INVESTIMENTO ░░ -->
+  <!-- ░░ STEP 10 — OBJETIVOS (múltiplos) ░░ -->
   <div class="step" id="step-10">
     <div class="inner">
-      <p class="label-step">10 / 12</p>
-      <h2 class="q-title">Qual investimento mensal você está considerando?</h2>
-      <p class="q-sub">Valor referente à gestão estratégica + mídia paga</p>
-      <div class="choices two" id="c10">
-        <div class="card" onclick="pick(10,'Até R$ 3.000/mês',this)"><span class="card-letter">A</span><div class="card-text">Até R$ 3.000/mês</div></div>
-        <div class="card" onclick="pick(10,'R$ 3.000 – R$ 8.000/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 3.000 – R$ 8.000/mês</div></div>
-        <div class="card" onclick="pick(10,'R$ 8.000 – R$ 20.000/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 8.000 – R$ 20.000/mês</div></div>
-        <div class="card" onclick="pick(10,'Acima de R$ 20.000/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 20.000/mês</div></div>
-        <div class="card" onclick="pick(10,'Ainda estou avaliando',this)"><span class="card-letter">E</span><div class="card-text">Ainda estou avaliando</div></div>
+      <p class="label-step">10 / 24</p>
+      <h2 class="q-title">O que você espera alcançar com a EXÍMIO?</h2>
+      <p class="q-sub">Selecione tudo que se aplica — pode marcar mais de um</p>
+      <div class="choices" id="c10">
+        <div class="card" onclick="multi(10,'Aumentar volume de leads',this)"><span class="card-letter">A</span><div class="card-text">Aumentar volume de leads</div></div>
+        <div class="card" onclick="multi(10,'Melhorar qualidade dos leads',this)"><span class="card-letter">B</span><div class="card-text">Melhorar qualidade dos leads</div></div>
+        <div class="card" onclick="multi(10,'Construir autoridade e reputação',this)"><span class="card-letter">C</span><div class="card-text">Construir autoridade e reputação</div></div>
+        <div class="card" onclick="multi(10,'Profissionalizar a comunicação',this)"><span class="card-letter">D</span><div class="card-text">Profissionalizar a comunicação</div></div>
+        <div class="card" onclick="multi(10,'Ter previsibilidade de resultados',this)"><span class="card-letter">E</span><div class="card-text">Ter previsibilidade de resultados</div></div>
+        <div class="card" onclick="multi(10,'Expandir para novos mercados',this)"><span class="card-letter">F</span><div class="card-text">Expandir para novos mercados</div></div>
       </div>
+      <button class="btn" id="b10" onclick="goTo(11)" disabled>Continuar <span class="arr">→</span></button>
     </div>
   </div>
 
-  <!-- ░░ STEP 11 — COMO CHEGOU ░░ -->
+  <!-- ░░ STEP 11 — PÚBLICO-ALVO ░░ -->
   <div class="step" id="step-11">
     <div class="inner">
-      <p class="label-step">11 / 12</p>
-      <h2 class="q-title">Como você chegou até a EXÍMIO?</h2>
-      <div class="choices three" id="c11">
-        <div class="card" onclick="pick(11,'Indicação',this)"><span class="card-letter">A</span><div class="card-text">Indicação de alguém</div></div>
-        <div class="card" onclick="pick(11,'Instagram',this)"><span class="card-letter">B</span><div class="card-text">Instagram</div></div>
-        <div class="card" onclick="pick(11,'LinkedIn',this)"><span class="card-letter">C</span><div class="card-text">LinkedIn</div></div>
-        <div class="card" onclick="pick(11,'Google',this)"><span class="card-letter">D</span><div class="card-text">Google</div></div>
-        <div class="card" onclick="pick(11,'Prospecção ativa',this)"><span class="card-letter">E</span><div class="card-text">Prospecção ativa</div></div>
-        <div class="card" onclick="pick(11,'Outro canal',this)"><span class="card-letter">F</span><div class="card-text">Outro canal</div></div>
+      <p class="label-step">11 / 24</p>
+      <h2 class="q-title">Descreva o perfil do seu cliente ideal.</h2>
+      <p class="q-sub">Sexo, faixa etária, renda, profissão, interesses, localidade e qualquer detalhe relevante.</p>
+      <textarea class="txt-input" id="i-publico" placeholder="Meu cliente ideal é..." style="height:130px;"></textarea>
+      <div>
+        <button class="btn" id="b11" onclick="advanceTxt('i-publico',12)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Quanto mais detalhado, melhor</p>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 12 — OBSERVAÇÕES ░░ -->
+  <!-- ░░ STEP 12 — PUV ░░ -->
   <div class="step" id="step-12">
     <div class="inner">
-      <p class="label-step">12 / 12</p>
+      <p class="label-step">12 / 24</p>
+      <h2 class="q-title">Qual é a sua Proposta Única de Valor?</h2>
+      <p class="q-sub">O que te diferencia da concorrência? O que você oferece que ninguém mais oferece — ou oferece melhor?</p>
+      <textarea class="txt-input" id="i-puv" placeholder="O que nos torna únicos é..." style="height:130px;"></textarea>
+      <div>
+        <button class="btn" id="b12" onclick="advanceTxt('i-puv',13)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 13 — CONCORRENTES ░░ -->
+  <div class="step" id="step-13">
+    <div class="inner">
+      <p class="label-step">13 / 24</p>
+      <h2 class="q-title">Quais são seus principais concorrentes?</h2>
+      <p class="q-sub">Liste ao menos 2. O que eles fazem bem e onde são fracos?</p>
+      <textarea class="txt-input" id="i-concorrentes" placeholder="Concorrente 1: ...&#10;Concorrente 2: ..." style="height:130px;"></textarea>
+      <div>
+        <button class="btn" id="b13" onclick="advanceTxt('i-concorrentes',14)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 14 — POSICIONAMENTO DE PREÇO ░░ -->
+  <div class="step" id="step-14">
+    <div class="inner">
+      <p class="label-step">14 / 24</p>
+      <h2 class="q-title">Como você se posiciona em relação ao preço do mercado?</h2>
+      <div class="choices one" id="c14">
+        <div class="card" onclick="pick(14,'Preço abaixo da concorrência',this)"><span class="card-letter">A</span><div class="card-text">Preço abaixo da concorrência</div></div>
+        <div class="card" onclick="pick(14,'Preço alinhado com o mercado',this)"><span class="card-letter">B</span><div class="card-text">Preço alinhado com o mercado</div></div>
+        <div class="card" onclick="pick(14,'Preço acima — justificado por diferencial',this)"><span class="card-letter">C</span><div class="card-text">Preço acima — justificado por diferencial</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 15 — CANAIS DE AQUISIÇÃO ░░ -->
+  <div class="step" id="step-15">
+    <div class="inner">
+      <p class="label-step">15 / 24</p>
+      <h2 class="q-title">Quais canais de aquisição você já utiliza?</h2>
+      <p class="q-sub">Selecione todos que se aplicam</p>
+      <div class="choices" id="c15">
+        <div class="card" onclick="multi(15,'Instagram / Facebook (orgânico)',this)"><span class="card-letter">A</span><div class="card-text">Instagram / Facebook (orgânico)</div></div>
+        <div class="card" onclick="multi(15,'Google Meu Negócio',this)"><span class="card-letter">B</span><div class="card-text">Google Meu Negócio</div></div>
+        <div class="card" onclick="multi(15,'Indicações / Referências',this)"><span class="card-letter">C</span><div class="card-text">Indicações / Referências</div></div>
+        <div class="card" onclick="multi(15,'WhatsApp ativo',this)"><span class="card-letter">D</span><div class="card-text">WhatsApp ativo</div></div>
+        <div class="card" onclick="multi(15,'Tráfego pago (Meta / Google Ads)',this)"><span class="card-letter">E</span><div class="card-text">Tráfego pago (Meta / Google Ads)</div></div>
+        <div class="card" onclick="multi(15,'Nenhum canal estruturado ainda',this)"><span class="card-letter">F</span><div class="card-text">Nenhum canal estruturado ainda</div></div>
+      </div>
+      <button class="btn" id="b15" onclick="goTo(16)" disabled>Continuar <span class="arr">→</span></button>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 16 — HISTÓRICO COM AGÊNCIAS ░░ -->
+  <div class="step" id="step-16">
+    <div class="inner">
+      <p class="label-step">16 / 24</p>
+      <h2 class="q-title">Você já trabalhou com tráfego pago antes?</h2>
+      <div class="choices one" id="c16">
+        <div class="card" onclick="pick(16,'Nunca investi em tráfego pago',this)"><span class="card-letter">A</span><div class="card-text">Nunca investi em tráfego pago</div></div>
+        <div class="card" onclick="pick(16,'Já investi por conta própria',this)"><span class="card-letter">B</span><div class="card-text">Já investi por conta própria</div></div>
+        <div class="card" onclick="pick(16,'Já trabalhei com outra agência / assessoria',this)"><span class="card-letter">C</span><div class="card-text">Já trabalhei com outra agência / assessoria</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 17 — REGIÕES ░░ -->
+  <div class="step" id="step-17">
+    <div class="inner">
+      <p class="label-step">17 / 24</p>
+      <h2 class="q-title">Em quais regiões as campanhas devem atuar?</h2>
+      <p class="q-sub">Cidades, estados ou nacional</p>
+      <input class="txt-input" id="i-regioes" type="text" placeholder="Ex.: Curitiba/PR, São Paulo/SP, Nacional..." autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b17" onclick="advance(17,'i-regioes',18)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 18 — WHATSAPP ░░ -->
+  <div class="step" id="step-18">
+    <div class="inner">
+      <p class="label-step">18 / 24</p>
+      <h2 class="q-title">Qual o número do WhatsApp Business para receber os leads?</h2>
+      <p class="q-sub">Este será o destino dos contatos gerados pelas campanhas</p>
+      <input class="txt-input" id="i-whatsapp" type="tel" placeholder="(41) 99999-9999" autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b18" onclick="advance(18,'i-whatsapp',19)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 19 — IDENTIDADE VISUAL ░░ -->
+  <div class="step" id="step-19">
+    <div class="inner">
+      <p class="label-step">19 / 24</p>
+      <h2 class="q-title">Você já possui identidade visual?</h2>
+      <p class="q-sub">Logo, cores, tipografia, manual de marca...</p>
+      <div class="choices three" id="c19">
+        <div class="card" onclick="pick(19,'Sim, completa',this)"><span class="card-letter">A</span><div class="card-text">Sim, completa</div></div>
+        <div class="card" onclick="pick(19,'Parcial / em desenvolvimento',this)"><span class="card-letter">B</span><div class="card-text">Parcial / em desenvolvimento</div></div>
+        <div class="card" onclick="pick(19,'Ainda não possuo',this)"><span class="card-letter">C</span><div class="card-text">Ainda não possuo</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 20 — SITE ░░ -->
+  <div class="step" id="step-20">
+    <div class="inner">
+      <p class="label-step">20 / 24</p>
+      <h2 class="q-title">Você tem site ou landing page ativa?</h2>
+      <div class="choices three" id="c20">
+        <div class="card" onclick="pick(20,'Sim, funcionando bem',this)"><span class="card-letter">A</span><div class="card-text">Sim, funcionando bem</div></div>
+        <div class="card" onclick="pick(20,'Sim, mas precisa melhorar',this)"><span class="card-letter">B</span><div class="card-text">Sim, mas precisa melhorar</div></div>
+        <div class="card" onclick="pick(20,'Não tenho ainda',this)"><span class="card-letter">C</span><div class="card-text">Não tenho ainda</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 21 — INVESTIMENTO ░░ -->
+  <div class="step" id="step-21">
+    <div class="inner">
+      <p class="label-step">21 / 24</p>
+      <h2 class="q-title">Qual investimento mensal você está considerando?</h2>
+      <p class="q-sub">Gestão estratégica + mídia paga &nbsp;·&nbsp; <span style="color:var(--dourado)">Mínimo recomendado: R$ 15k/mês</span></p>
+      <div class="choices two" id="c21">
+        <div class="card" onclick="pick(21,'R$ 15k – R$ 30k/mês',this)"><span class="card-letter">A</span><div class="card-text">R$ 15k – R$ 30k/mês</div></div>
+        <div class="card" onclick="pick(21,'R$ 30k – R$ 60k/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 30k – R$ 60k/mês</div></div>
+        <div class="card" onclick="pick(21,'R$ 60k – R$ 100k/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 60k – R$ 100k/mês</div></div>
+        <div class="card" onclick="pick(21,'Acima de R$ 100k/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 100k/mês</div></div>
+        <div class="card" onclick="pick(21,'Ainda estou avaliando',this)"><span class="card-letter">E</span><div class="card-text">Ainda estou avaliando</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 22 — VÍDEOS ░░ -->
+  <div class="step" id="step-22">
+    <div class="inner">
+      <p class="label-step">22 / 24</p>
+      <h2 class="q-title">Você está disposto a gravar vídeos para os anúncios?</h2>
+      <p class="q-sub">Anúncios com o rosto do responsável têm desempenho significativamente superior</p>
+      <div class="choices one" id="c22">
+        <div class="card" onclick="pick(22,'Sim, sem problema',this)"><span class="card-letter">A</span><div class="card-text">Sim, sem problema</div></div>
+        <div class="card" onclick="pick(22,'Prefiro começar sem aparecer — mas estou aberto a discutir',this)"><span class="card-letter">B</span><div class="card-text">Prefiro começar sem aparecer — mas estou aberto a discutir</div></div>
+        <div class="card" onclick="pick(22,'Não tenho interesse em aparecer nos anúncios',this)"><span class="card-letter">C</span><div class="card-text">Não tenho interesse em aparecer nos anúncios</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 23 — COMO CHEGOU ░░ -->
+  <div class="step" id="step-23">
+    <div class="inner">
+      <p class="label-step">23 / 24</p>
+      <h2 class="q-title">Como você chegou até a EXÍMIO?</h2>
+      <div class="choices three" id="c23">
+        <div class="card" onclick="pick(23,'Indicação',this)"><span class="card-letter">A</span><div class="card-text">Indicação de alguém</div></div>
+        <div class="card" onclick="pick(23,'Instagram',this)"><span class="card-letter">B</span><div class="card-text">Instagram</div></div>
+        <div class="card" onclick="pick(23,'LinkedIn',this)"><span class="card-letter">C</span><div class="card-text">LinkedIn</div></div>
+        <div class="card" onclick="pick(23,'Google',this)"><span class="card-letter">D</span><div class="card-text">Google</div></div>
+        <div class="card" onclick="pick(23,'Prospecção ativa',this)"><span class="card-letter">E</span><div class="card-text">Prospecção ativa</div></div>
+        <div class="card" onclick="pick(23,'Outro canal',this)"><span class="card-letter">F</span><div class="card-text">Outro canal</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 24 — OBSERVAÇÕES ░░ -->
+  <div class="step" id="step-24">
+    <div class="inner">
+      <p class="label-step">24 / 24</p>
       <h2 class="q-title">Há algo mais que queira nos contar antes da reunião?</h2>
       <p class="q-sub">Contexto adicional, expectativas, dúvidas... <span style="color:var(--dourado)">Opcional.</span></p>
       <textarea class="txt-input" id="i-obs" placeholder="Escreva livremente..."></textarea>
       <div>
-        <button class="btn" onclick="goTo(13)">Agendar reunião <span class="arr">→</span></button>
+        <button class="btn" onclick="goTo(25)">Agendar reunião <span class="arr">→</span></button>
         <p class="hint">Campo opcional — pode pular</p>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 13 — AGENDAMENTO ░░ -->
-  <div class="step" id="step-13">
+  <!-- ░░ STEP 25 — AGENDAMENTO ░░ -->
+  <div class="step" id="step-25">
     <div class="inner">
       <p class="label-step" style="color:var(--dourado);">✦ QUASE LÁ</p>
       <h2 class="q-title">Escolha o melhor momento para a<br>Reunião de Onboarding.</h2>
@@ -689,19 +870,19 @@
           <div class="ts-list" id="tsList"></div>
         </div>
       </div>
-      <button class="btn" id="b13" onclick="submitForm()" disabled style="margin-top:20px;">
+      <button class="btn" id="b25" onclick="submitForm()" disabled style="margin-top:20px;">
         Confirmar reunião <span class="arr">→</span>
       </button>
       <div id="webhookError">
         ⚠ Não foi possível enviar os dados automaticamente.
         <a onclick="submitForm(true)">Tentar novamente</a> ou
-        <a onclick="goTo(14); finishLocally()">continuar mesmo assim →</a>
+        <a onclick="goTo(26); finishLocally()">continuar mesmo assim →</a>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STEP 14 — CONFIRMAÇÃO ░░ -->
-  <div class="step" id="step-14">
+  <!-- ░░ STEP 26 — CONFIRMAÇÃO ░░ -->
+  <div class="step" id="step-26">
     <div class="inner">
       <div class="ty-star" style="width:64px;height:64px;">
         <svg viewBox="0 0 100 100" width="64" height="64">
@@ -803,9 +984,9 @@
    STATE
 ═══════════════════════════════════════════════════ */
 let cur = 0;
-const TOTAL = 14;
+const TOTAL = 26;
 const A = {};           // respostas simples
-const M = { 7: [] };   // respostas múltiplas
+const M = { 10: [], 15: [] };   // respostas múltiplas
 
 let selDate = null, selTime = null;
 const today = new Date(); today.setHours(0,0,0,0);
@@ -828,7 +1009,7 @@ function goTo(n){
     updateCounter();
     const inp = to.querySelector('input, textarea');
     if(inp) setTimeout(()=>inp.focus(), 320);
-    if(n === 13) renderCal();
+    if(n === 25) renderCal();
   }, 450);
 }
 
@@ -838,29 +1019,58 @@ function updateProgress(){
 
 function updateCounter(){
   const el = document.getElementById('stepCounter');
-  el.textContent = (cur>0 && cur<14) ? (String(cur).padStart(2,'0')+' / 12') : '';
+  el.textContent = (cur>0 && cur<26) ? (String(cur).padStart(2,'0')+' / 24') : '';
 }
 
 /* ═══════════════════════════════════════════════════
    INPUTS DE TEXTO
 ═══════════════════════════════════════════════════ */
-['nome','empresa','cargo'].forEach((f,i)=>{
-  const step = i+1;
-  const inp  = document.getElementById('i-'+f);
-  const btn  = document.getElementById('b'+step);
+// Inputs de texto simples (Enter para avançar)
+const _txtInputs = [
+  { f:'nome',     step:1,  next:2  },
+  { f:'empresa',  step:2,  next:3  },
+  { f:'cargo',    step:3,  next:4  },
+  { f:'email',    step:4,  next:5  },
+  { f:'regioes',  step:17, next:18 },
+  { f:'whatsapp', step:18, next:19 },
+];
+_txtInputs.forEach(({f, step, next})=>{
+  const inp = document.getElementById('i-'+f);
+  const btn = document.getElementById('b'+step);
   if(!inp) return;
-  inp.addEventListener('input', ()=>{ btn.disabled = inp.value.trim().length < 2; });
+  inp.addEventListener('input', ()=>{ if(btn) btn.disabled = inp.value.trim().length < 2; });
   inp.addEventListener('keydown', e=>{
-    if(e.key==='Enter' && inp.value.trim().length>=2){
+    if(e.key==='Enter' && !e.shiftKey && inp.value.trim().length>=2){
       A[f] = inp.value.trim();
-      goTo(step+1);
+      goTo(next);
     }
   });
+});
+
+// Textareas (ativa botão com ≥5 chars)
+const _txaInputs = [
+  { f:'meta',         btn:'b9'  },
+  { f:'publico',      btn:'b11' },
+  { f:'puv',          btn:'b12' },
+  { f:'concorrentes', btn:'b13' },
+];
+_txaInputs.forEach(({f, btn})=>{
+  const inp = document.getElementById('i-'+f);
+  const b   = document.getElementById(btn);
+  if(!inp || !b) return;
+  inp.addEventListener('input', ()=>{ b.disabled = inp.value.trim().length < 5; });
 });
 
 function advance(step, inputId, next){
   const val = document.getElementById(inputId).value.trim();
   if(val.length < 2) return;
+  A[inputId.replace('i-','')] = val;
+  goTo(next);
+}
+
+function advanceTxt(inputId, next){
+  const val = document.getElementById(inputId).value.trim();
+  if(val.length < 5) return;
   A[inputId.replace('i-','')] = val;
   goTo(next);
 }
@@ -994,23 +1204,35 @@ function buildPayload(){
 
   return {
     // ── Identificação ──────────────────────────────
-    nome:             document.getElementById('i-nome').value.trim(),
-    empresa:          document.getElementById('i-empresa').value.trim(),
-    cargo:            document.getElementById('i-cargo').value.trim(),
+    nome:               document.getElementById('i-nome').value.trim(),
+    empresa:            document.getElementById('i-empresa').value.trim(),
+    cargo:              document.getElementById('i-cargo').value.trim(),
+    email:              document.getElementById('i-email').value.trim(),
     // ── Perfil de negócio ──────────────────────────
-    segmento:         A.s4  || '',
-    faturamento:      A.s5  || '',
-    desafio:          A.s6  || '',
-    objetivos:        M[7]  || [],
-    identidade_visual:A.s8  || '',
-    site:             A.s9  || '',
-    investimento:     A.s10 || '',
-    canal_origem:     A.s11 || '',
-    observacoes:      document.getElementById('i-obs').value.trim(),
+    segmento:           A.s5  || '',
+    faturamento:        A.s6  || '',
+    momento_atual:      A.s7  || '',
+    desafio:            A.s8  || '',
+    meta_smart:         document.getElementById('i-meta').value.trim(),
+    objetivos:          M[10] || [],
+    publico_alvo:       document.getElementById('i-publico').value.trim(),
+    puv:                document.getElementById('i-puv').value.trim(),
+    concorrentes:       document.getElementById('i-concorrentes').value.trim(),
+    posicionamento_preco: A.s14 || '',
+    canais_aquisicao:   M[15] || [],
+    historico_agencia:  A.s16 || '',
+    regioes:            document.getElementById('i-regioes').value.trim(),
+    whatsapp:           document.getElementById('i-whatsapp').value.trim(),
+    identidade_visual:  A.s19 || '',
+    site:               A.s20 || '',
+    investimento:       A.s21 || '',
+    disponivel_videos:  A.s22 || '',
+    canal_origem:       A.s23 || '',
+    observacoes:        document.getElementById('i-obs').value.trim(),
     // ── Reunião ────────────────────────────────────
-    reuniao_data_iso:      dataISO,
-    reuniao_horario:       selTime || '',
-    reuniao_data_formatada:dataFmt,
+    reuniao_data_iso:       dataISO,
+    reuniao_horario:        selTime || '',
+    reuniao_data_formatada: dataFmt,
     // ── Meta ───────────────────────────────────────
     timestamp: new Date().toISOString(),
     fonte:     'eximio-onboarding-form'
@@ -1037,14 +1259,14 @@ async function submitForm(retry = false){
   // Se não configurou webhook, vai direto
   if(!WEBHOOK_URL || WEBHOOK_URL === 'COLE_SUA_URL_AQUI'){
     finishLocally();
-    goTo(14);
+    goTo(26);
     return;
   }
 
   // Mostra loading
   const overlay = document.getElementById('loadingOverlay');
   overlay.classList.add('visible');
-  document.getElementById('b13').disabled = true;
+  document.getElementById('b25').disabled = true;
 
   try {
     // 1 · Salvar no Firebase (principal)
@@ -1065,12 +1287,12 @@ async function submitForm(retry = false){
 
     overlay.classList.remove('visible');
     finishLocally();
-    goTo(14);
+    goTo(26);
 
   } catch(err){
     console.error('Erro ao salvar:', err);
     overlay.classList.remove('visible');
-    document.getElementById('b13').disabled = false;
+    document.getElementById('b25').disabled = false;
     errBox.style.display = 'block';
   }
 }

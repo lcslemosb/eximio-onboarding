@@ -304,18 +304,41 @@
       <div class="dp-row"><span class="dp-key">Nome</span><span class="dp-val" id="d-nome2"></span></div>
       <div class="dp-row"><span class="dp-key">Empresa</span><span class="dp-val" id="d-empresa"></span></div>
       <div class="dp-row"><span class="dp-key">Cargo</span><span class="dp-val" id="d-cargo"></span></div>
+      <div class="dp-row"><span class="dp-key">E-mail</span><span class="dp-val" id="d-email"></span></div>
     </div>
 
     <div class="dp-section">
       <div class="dp-sec-title">Diagnóstico do negócio</div>
       <div class="dp-row"><span class="dp-key">Segmento</span><span class="dp-val" id="d-segmento"></span></div>
       <div class="dp-row"><span class="dp-key">Faturamento</span><span class="dp-val" id="d-fat"></span></div>
+      <div class="dp-row"><span class="dp-key">Momento atual</span><span class="dp-val" id="d-momento"></span></div>
       <div class="dp-row"><span class="dp-key">Maior desafio</span><span class="dp-val" id="d-desafio"></span></div>
+      <div class="dp-row"><span class="dp-key">Meta</span><span class="dp-val" id="d-meta-smart"></span></div>
     </div>
 
     <div class="dp-section">
       <div class="dp-sec-title">Objetivos com a EXÍMIO</div>
       <div id="d-objs"></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Público e posicionamento</div>
+      <div class="dp-row"><span class="dp-key">Público-alvo</span><span class="dp-val" id="d-publico"></span></div>
+      <div class="dp-row"><span class="dp-key">PUV</span><span class="dp-val" id="d-puv"></span></div>
+      <div class="dp-row"><span class="dp-key">Concorrentes</span><span class="dp-val" id="d-concorrentes"></span></div>
+      <div class="dp-row"><span class="dp-key">Posicionamento</span><span class="dp-val" id="d-posicionamento"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Canais e histórico</div>
+      <div id="d-canais-wrap"></div>
+      <div class="dp-row" style="margin-top:8px"><span class="dp-key">Histórico tráfego</span><span class="dp-val" id="d-historico"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Campanhas</div>
+      <div class="dp-row"><span class="dp-key">Regiões</span><span class="dp-val" id="d-regioes"></span></div>
+      <div class="dp-row"><span class="dp-key">WhatsApp Business</span><span class="dp-val" id="d-whatsapp"></span></div>
     </div>
 
     <div class="dp-section">
@@ -327,6 +350,7 @@
     <div class="dp-section">
       <div class="dp-sec-title">Contexto comercial</div>
       <div class="dp-row"><span class="dp-key">Investimento</span><span class="dp-val" id="d-inv"></span></div>
+      <div class="dp-row"><span class="dp-key">Disponível para vídeos</span><span class="dp-val" id="d-videos"></span></div>
       <div class="dp-row"><span class="dp-key">Canal de origem</span><span class="dp-val" id="d-canal"></span></div>
       <div class="dp-row" id="d-obs-row"><span class="dp-key">Observações</span><span class="dp-val" id="d-obs"></span></div>
     </div>
@@ -485,18 +509,29 @@ function openDetail(doc){
   set('d-meta',   `${doc.empresa||'—'} · ${doc.cargo||'—'}`);
   set('d-empresa',doc.empresa||'—');
   set('d-cargo',  doc.cargo||'—');
+  set('d-email',  doc.email||'—');
 
   let ts='—';
   try{ ts = doc.timestamp?.toDate ? doc.timestamp.toDate().toLocaleString('pt-BR') : new Date(doc.timestamp).toLocaleString('pt-BR'); }catch(e){}
   set('d-ts','Enviado em '+ts);
 
-  set('d-segmento', doc.segmento||'—');
-  set('d-fat',      doc.faturamento||'—');
-  set('d-desafio',  doc.desafio||'—');
-  set('d-idv',      doc.identidade_visual||'—');
-  set('d-site',     doc.site||'—');
-  set('d-inv',      doc.investimento||'—');
-  set('d-canal',    doc.canal_origem||'—');
+  set('d-segmento',    doc.segmento||'—');
+  set('d-fat',         doc.faturamento||'—');
+  set('d-momento',     doc.momento_atual||'—');
+  set('d-desafio',     doc.desafio||'—');
+  set('d-meta-smart',  doc.meta_smart||'—');
+  set('d-publico',     doc.publico_alvo||'—');
+  set('d-puv',         doc.puv||'—');
+  set('d-concorrentes',doc.concorrentes||'—');
+  set('d-posicionamento', doc.posicionamento_preco||'—');
+  set('d-historico',   doc.historico_agencia||'—');
+  set('d-regioes',     doc.regioes||'—');
+  set('d-whatsapp',    doc.whatsapp||'—');
+  set('d-idv',         doc.identidade_visual||'—');
+  set('d-site',        doc.site||'—');
+  set('d-inv',         doc.investimento||'—');
+  set('d-videos',      doc.disponivel_videos||'—');
+  set('d-canal',       doc.canal_origem||'—');
 
   const obs = doc.observacoes||'';
   set('d-obs', obs||'—');
@@ -509,6 +544,14 @@ function openDetail(doc){
     const t=document.createElement('span'); t.className='dp-tag'; t.textContent=o; ow.appendChild(t);
   });
   if(!(doc.objetivos||[]).length) ow.innerHTML='<span style="color:var(--muted);font-size:13px">—</span>';
+
+  // Canais de aquisição
+  const cw = document.getElementById('d-canais-wrap');
+  cw.innerHTML='';
+  (doc.canais_aquisicao||[]).forEach(c=>{
+    const t=document.createElement('span'); t.className='dp-tag'; t.textContent=c; cw.appendChild(t);
+  });
+  if(!(doc.canais_aquisicao||[]).length) cw.innerHTML='<span style="color:var(--muted);font-size:13px">—</span>';
 
   // Reunião
   const parts = (doc.reuniao_data_formatada||'').split(' · ');
@@ -551,34 +594,65 @@ async function setStatus(s){
 function copyResumo(){
   const doc=allDocs.find(d=>d.id===currentId);
   if(!doc) return;
-  const objs=(doc.objetivos||[]).join(', ')||'—';
+  const objs   = (doc.objetivos||[]).join(', ')||'—';
+  const canais = (doc.canais_aquisicao||[]).join(', ')||'—';
   const txt=
 `BRIEFING DE ONBOARDING — EXÍMIO
-${'─'.repeat(42)}
-CLIENTE         ${doc.nome||'—'}
-EMPRESA         ${doc.empresa||'—'}
-CARGO           ${doc.cargo||'—'}
+${'─'.repeat(50)}
+CLIENTE            ${doc.nome||'—'}
+EMPRESA            ${doc.empresa||'—'}
+CARGO              ${doc.cargo||'—'}
+E-MAIL             ${doc.email||'—'}
 
 NEGÓCIO
-Segmento        ${doc.segmento||'—'}
-Faturamento     ${doc.faturamento||'—'}
-Desafio         ${doc.desafio||'—'}
+Segmento           ${doc.segmento||'—'}
+Faturamento        ${doc.faturamento||'—'}
+Momento atual      ${doc.momento_atual||'—'}
+Maior desafio      ${doc.desafio||'—'}
 
-OBJETIVOS
+META DO PROJETO
+${doc.meta_smart||'—'}
+
+OBJETIVOS COM A EXÍMIO
 ${objs}
 
-INFRAESTRUTURA
-Identidade      ${doc.identidade_visual||'—'}
-Site            ${doc.site||'—'}
+PÚBLICO-ALVO
+${doc.publico_alvo||'—'}
+
+PROPOSTA ÚNICA DE VALOR
+${doc.puv||'—'}
+
+CONCORRENTES
+${doc.concorrentes||'—'}
+
+POSICIONAMENTO DE PREÇO
+${doc.posicionamento_preco||'—'}
+
+CANAIS DE AQUISIÇÃO ATUAIS
+${canais}
+
+HISTÓRICO COM TRÁFEGO PAGO
+${doc.historico_agencia||'—'}
+
+CAMPANHAS
+Regiões            ${doc.regioes||'—'}
+WhatsApp Business  ${doc.whatsapp||'—'}
+
+INFRAESTRUTURA DIGITAL
+Identidade visual  ${doc.identidade_visual||'—'}
+Site / LP          ${doc.site||'—'}
 
 COMERCIAL
-Investimento    ${doc.investimento||'—'}
-Canal origem    ${doc.canal_origem||'—'}
-Observações     ${doc.observacoes||'—'}
+Investimento       ${doc.investimento||'—'}
+Disponível vídeos  ${doc.disponivel_videos||'—'}
+Canal de origem    ${doc.canal_origem||'—'}
+
+OBSERVAÇÕES
+${doc.observacoes||'—'}
 
 REUNIÃO
 ${doc.reuniao_data_formatada||'—'}
-${'─'.repeat(42)}
+${'─'.repeat(50)}
 EXÍMIO · Curitiba, PR`;
 
   navigator.clipboard.writeText(txt).then(()=>{
