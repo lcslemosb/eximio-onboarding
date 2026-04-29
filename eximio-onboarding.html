@@ -399,13 +399,30 @@
     @media (max-width: 600px) {
       /* Layout base */
       html, body { overflow: hidden; }
-      #logoWrap  { left: 18px; top: 18px; }
+      #logoWrap    { left: 18px; top: 18px; }
       #stepCounter { right: 18px; top: 20px; font-size: 11px; }
-      #formWrap  { padding: 60px 20px 52px; }
-      .step      { padding: 0; }
 
-      /* Scroll interno usa dvh para respeitar a barra do browser */
-      .inner { max-height: calc(100dvh - 130px); }
+      /* Container usa dvh para respeitar barra do browser */
+      #formWrap { height: 100dvh; padding: 0; }
+
+      /* Centramento explícito via translate — confiável em todos os mobile browsers */
+      .step {
+        top: 50%; left: 50%;
+        transform: translate(-50%, calc(-50% + 36px));
+        padding: 0 22px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .step.active { opacity: 1; transform: translate(-50%, -50%); }
+      .step.exit   { opacity: 0; transform: translate(-50%, calc(-50% - 36px)); }
+
+      /* Scroll interno */
+      .inner { max-height: calc(100dvh - 120px); }
+
+      /* Telas welcome e confirmação — centram o próprio inner */
+      #step-0 .inner,
+      #step-26 .inner { min-height: calc(100dvh - 120px); }
 
       /* Rótulo do step */
       .label-step { font-size: 10px; margin-bottom: 12px; }
