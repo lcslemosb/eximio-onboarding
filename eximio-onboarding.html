@@ -730,6 +730,22 @@
 
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  const _FB = {
+    apiKey: "AIzaSyDinhE3hJjsVz9WLGZs_YPeuXZ7ayqHTAc",
+    authDomain: "eximio-onboarding.firebaseapp.com",
+    projectId: "eximio-onboarding",
+    storageBucket: "eximio-onboarding.firebasestorage.app",
+    messagingSenderId: "501113935815",
+    appId: "1:501113935815:web:2fd5e50b05091663cdebe2"
+  };
+  firebase.initializeApp(_FB);
+  window._db = firebase.firestore();
+</script>
+
 <!-- Dica de navegação -->
 <div id="navHint">
   <span>Tab para navegar</span>
@@ -1031,21 +1047,28 @@ async function submitForm(retry = false){
   document.getElementById('b13').disabled = true;
 
   try {
-    const res = await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    // 1 · Salvar no Firebase (principal)
+    await window._db.collection('onboarding').add({
+      ...payload,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'novo'
     });
 
-    if(!res.ok) throw new Error('HTTP '+res.status);
+    // 2 · Webhook Make (opcional, não bloqueia)
+    if(WEBHOOK_URL && WEBHOOK_URL !== 'COLE_SUA_URL_AQUI'){
+      fetch(WEBHOOK_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      }).catch(e=>console.warn('Webhook opcional falhou:',e));
+    }
 
-    // Sucesso
     overlay.classList.remove('visible');
     finishLocally();
     goTo(14);
 
   } catch(err){
-    console.error('Webhook error:', err);
+    console.error('Erro ao salvar:', err);
     overlay.classList.remove('visible');
     document.getElementById('b13').disabled = false;
     errBox.style.display = 'block';

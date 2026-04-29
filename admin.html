@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXÍMIO — Painel de Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #0F1C2E;
+      --azul-card: #111f30;
+      --offwhite: #F2F0EA;
+      --dourado: #C7A977;
+      --dourado-dim: rgba(199,169,119,0.1);
+      --muted: rgba(242,240,234,0.3);
+      --half: rgba(242,240,234,0.55);
+      --border: rgba(242,240,234,0.07);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { background:var(--azul); color:var(--offwhite); font-family:'Inter',sans-serif; min-height:100vh; }
+
+    /* ── LOGIN ─────────────────────────────── */
+    #loginScreen {
+      position:fixed; inset:0; display:flex; align-items:center;
+      justify-content:center; background:var(--azul); z-index:500;
+      transition:opacity 0.5s ease;
+    }
+    #loginScreen.hidden { opacity:0; pointer-events:none; }
+    .login-box { text-align:center; max-width:340px; width:100%; padding:0 24px; }
+    .login-star { margin:0 auto 36px; animation:spinStar 20s linear infinite; }
+    @keyframes spinStar { to { transform:rotate(360deg); } }
+    .login-title { font-family:'Playfair Display',serif; font-size:26px; margin-bottom:8px; }
+    .login-sub { font-size:11px; letter-spacing:0.18em; color:var(--dourado); text-transform:uppercase; margin-bottom:40px; }
+    .login-input {
+      width:100%; background:none; border:none;
+      border-bottom:1px solid rgba(242,240,234,0.15);
+      color:var(--offwhite); font-size:20px; font-family:'Inter',sans-serif;
+      padding:12px 0; outline:none; text-align:center; letter-spacing:0.25em;
+      transition:border-color 0.3s; caret-color:var(--dourado);
+    }
+    .login-input:focus { border-bottom-color:var(--dourado); }
+    .login-btn {
+      margin-top:28px; background:var(--dourado); color:var(--azul);
+      border:none; padding:14px 40px; font-size:11px; font-weight:600;
+      letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+      font-family:'Inter',sans-serif; transition:background 0.2s;
+    }
+    .login-btn:hover { background:var(--offwhite); }
+    .login-error { font-size:12px; color:rgba(220,100,100,0.8); margin-top:14px; display:none; }
+
+    /* ── DASHBOARD ─────────────────────────── */
+    #dashboard { display:none; }
+    #dashboard.visible { display:flex; flex-direction:column; min-height:100vh; }
+
+    /* Header */
+    .dash-header {
+      position:fixed; top:0; left:0; right:0; height:58px;
+      background:rgba(15,28,46,0.96); backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; padding:0 32px; z-index:100; gap:12px;
+    }
+    .dash-logo { display:flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-size:13px; letter-spacing:0.15em; opacity:0.85; }
+    .dash-sep { width:1px; height:18px; background:var(--border); margin:0 6px; }
+    .dash-subtitle { font-size:11px; letter-spacing:0.15em; color:var(--dourado); text-transform:uppercase; opacity:0.75; }
+    .dash-badge { background:var(--dourado); color:var(--azul); font-size:10px; font-weight:700; padding:2px 8px; letter-spacing:0.05em; }
+    .dash-logout {
+      margin-left:auto; background:none; border:1px solid var(--border);
+      color:var(--muted); font-size:11px; letter-spacing:0.1em;
+      padding:6px 14px; cursor:pointer; font-family:'Inter',sans-serif;
+      transition:all 0.2s;
+    }
+    .dash-logout:hover { border-color:var(--dourado); color:var(--dourado); }
+
+    /* Stats */
+    .dash-stats {
+      margin-top:58px; display:flex;
+      border-bottom:1px solid var(--border);
+      background:rgba(15,28,46,0.4);
+    }
+    .stat { flex:1; padding:20px 28px; border-right:1px solid var(--border); }
+    .stat:last-child { border-right:none; }
+    .stat-val { font-family:'Playfair Display',serif; font-size:36px; color:var(--dourado); line-height:1; margin-bottom:6px; }
+    .stat-label { font-size:10px; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; }
+
+    /* Toolbar */
+    .dash-toolbar { padding:20px 32px 0; display:flex; align-items:center; gap:16px; }
+    .dash-search {
+      background:none; border:none; border-bottom:1px solid var(--border);
+      color:var(--offwhite); font-size:14px; font-family:'Inter',sans-serif;
+      padding:10px 0; outline:none; flex:1; max-width:360px;
+      transition:border-color 0.3s; caret-color:var(--dourado);
+    }
+    .dash-search::placeholder { color:var(--muted); }
+    .dash-search:focus { border-bottom-color:var(--dourado); }
+    .filter-btns { display:flex; gap:6px; }
+    .filter-btn {
+      font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+      padding:6px 14px; cursor:pointer; border:1px solid var(--border);
+      background:none; font-family:'Inter',sans-serif; color:var(--muted);
+      transition:all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color:var(--dourado); color:var(--dourado); background:var(--dourado-dim); }
+
+    /* List */
+    .client-list { padding:16px 32px 80px; display:flex; flex-direction:column; gap:7px; }
+    .empty-state { text-align:center; padding:80px 32px; color:var(--muted); font-size:14px; line-height:1.8; }
+    .empty-star { font-size:40px; margin-bottom:16px; opacity:0.25; }
+
+    .client-card {
+      border:1px solid var(--border); padding:16px 20px; cursor:pointer;
+      display:flex; align-items:center; gap:14px;
+      transition:border-color 0.2s, background 0.2s;
+      animation:fadeUp 0.35s ease both;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .client-card:hover { border-color:rgba(199,169,119,0.3); background:rgba(199,169,119,0.02); }
+
+    .sdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .sdot.novo { background:var(--dourado); box-shadow:0 0 6px rgba(199,169,119,0.4); }
+    .sdot.em_preparacao { background:#6ba3d6; }
+    .sdot.concluido { background:#6bbd8a; }
+
+    .card-info { flex:1; min-width:0; }
+    .card-name { font-size:15px; font-weight:500; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-sub { font-size:12px; color:var(--half); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-right { text-align:right; flex-shrink:0; display:flex; flex-direction:column; gap:4px; align-items:flex-end; }
+    .card-seg { font-size:10px; letter-spacing:0.08em; color:var(--dourado); text-transform:uppercase; opacity:0.65; }
+    .card-reuniao { font-size:11px; color:var(--muted); }
+    .card-badge { font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 8px; border:1px solid; }
+    .card-badge.novo { border-color:rgba(199,169,119,0.35); color:var(--dourado); }
+    .card-badge.em_preparacao { border-color:rgba(107,163,214,0.35); color:#6ba3d6; }
+    .card-badge.concluido { border-color:rgba(107,189,138,0.35); color:#6bbd8a; }
+
+    /* ── OVERLAY ──────────────────────────── */
+    #overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.45);
+      z-index:190; opacity:0; pointer-events:none; transition:opacity 0.4s;
+    }
+    #overlay.visible { opacity:1; pointer-events:all; }
+
+    /* ── DETAIL PANEL ─────────────────────── */
+    #detailPanel {
+      position:fixed; top:0; right:0; bottom:0; width:460px; max-width:100vw;
+      background:#0c1824; border-left:1px solid var(--border);
+      transform:translateX(100%); transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      z-index:200; display:flex; flex-direction:column; overflow:hidden;
+    }
+    #detailPanel.open { transform:translateX(0); }
+
+    .dp-header { padding:22px 26px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:12px; }
+    .dp-close { background:none; border:none; color:var(--muted); font-size:22px; cursor:pointer; line-height:1; flex-shrink:0; margin-top:1px; transition:color 0.2s; }
+    .dp-close:hover { color:var(--offwhite); }
+    .dp-title-wrap { flex:1; }
+    .dp-name { font-family:'Playfair Display',serif; font-size:22px; margin-bottom:4px; }
+    .dp-meta { font-size:12px; color:var(--half); }
+    .dp-ts { font-size:10px; color:var(--muted); margin-top:6px; letter-spacing:0.05em; }
+
+    /* Status selector */
+    .dp-status { display:flex; gap:6px; padding:14px 26px; border-bottom:1px solid var(--border); }
+    .sts-btn {
+      font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
+      padding:6px 12px; cursor:pointer; border:1px solid var(--border);
+      background:none; font-family:'Inter',sans-serif; color:var(--muted);
+      transition:all 0.2s;
+    }
+    .sts-btn:hover { border-color:var(--dourado); color:var(--dourado); }
+    .sts-btn.a-novo { border-color:rgba(199,169,119,0.5); color:var(--dourado); background:rgba(199,169,119,0.06); }
+    .sts-btn.a-em_preparacao { border-color:rgba(107,163,214,0.5); color:#6ba3d6; background:rgba(107,163,214,0.06); }
+    .sts-btn.a-concluido { border-color:rgba(107,189,138,0.5); color:#6bbd8a; background:rgba(107,189,138,0.06); }
+
+    /* Body */
+    .dp-body { flex:1; overflow-y:auto; padding:22px 26px; scrollbar-width:none; }
+    .dp-body::-webkit-scrollbar { display:none; }
+
+    .dp-section { margin-bottom:26px; }
+    .dp-sec-title {
+      font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--dourado); margin-bottom:12px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .dp-sec-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(199,169,119,0.15),transparent); }
+    .dp-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid rgba(242,240,234,0.035); font-size:13px; }
+    .dp-row:last-child { border-bottom:none; }
+    .dp-key { color:var(--muted); min-width:120px; flex-shrink:0; line-height:1.5; }
+    .dp-val { color:var(--offwhite); line-height:1.5; }
+    .dp-tag { display:inline-block; border:1px solid rgba(199,169,119,0.22); padding:3px 10px; font-size:11px; color:var(--dourado); margin:2px 3px 2px 0; }
+
+    .reuniao-box { border:1px solid rgba(199,169,119,0.2); padding:16px 18px; margin-top:4px; }
+    .r-data { font-family:'Playfair Display',serif; font-size:18px; margin-bottom:4px; }
+    .r-hora { font-size:13px; color:var(--dourado); }
+    .r-tipo { font-size:11px; color:var(--muted); margin-top:4px; }
+
+    /* Footer */
+    .dp-footer { padding:14px 26px; border-top:1px solid var(--border); }
+    .copy-btn {
+      width:100%; background:var(--dourado); color:var(--azul);
+      border:none; padding:13px; font-size:11px; font-weight:600;
+      letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+      font-family:'Inter',sans-serif; transition:background 0.2s;
+    }
+    .copy-btn:hover { background:var(--offwhite); }
+    .copy-btn.ok { background:#6bbd8a; color:#fff; }
+
+    @media (max-width:640px) {
+      .dash-header { padding:0 16px; }
+      .dash-stats { flex-wrap:wrap; }
+      .stat { min-width:50%; border-right:none; border-bottom:1px solid var(--border); }
+      .client-list { padding:16px; }
+      .dash-toolbar { padding:16px 16px 0; flex-wrap:wrap; }
+      #detailPanel { width:100vw; }
+      .filter-btns { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-star" style="width:54px;height:54px;">
+      <svg viewBox="0 0 100 100" width="54" height="54">
+        <defs>
+          <clipPath id="lt"><rect x="0" y="0" width="100" height="50"/></clipPath>
+          <clipPath id="lb"><rect x="0" y="50" width="100" height="50"/></clipPath>
+        </defs>
+        <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4" fill="#C7A977" clip-path="url(#lt)"/>
+        <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4" fill="rgba(242,240,234,0.28)" clip-path="url(#lb)"/>
+      </svg>
+    </div>
+    <h1 class="login-title">Painel de Onboarding</h1>
+    <p class="login-sub">Acesso exclusivo EXÍMIO</p>
+    <input class="login-input" id="passInput" type="password" placeholder="••••••••" autocomplete="off"/>
+    <br>
+    <button class="login-btn" onclick="doLogin()">Entrar →</button>
+    <p class="login-error" id="loginError">Senha incorreta.</p>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeDetail()"></div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header class="dash-header">
+    <div class="dash-logo">
+      <svg width="18" height="18" viewBox="0 0 100 100">
+        <defs>
+          <clipPath id="ht"><rect x="0" y="0" width="100" height="50"/></clipPath>
+          <clipPath id="hb"><rect x="0" y="50" width="100" height="50"/></clipPath>
+        </defs>
+        <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4" fill="#C7A977" clip-path="url(#ht)"/>
+        <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4" fill="rgba(242,240,234,0.3)" clip-path="url(#hb)"/>
+      </svg>
+      EXÍMIO
+    </div>
+    <div class="dash-sep"></div>
+    <span class="dash-subtitle">Painel de Onboarding</span>
+    <span class="dash-badge" id="totalBadge">0</span>
+    <button class="dash-logout" onclick="doLogout()">Sair</button>
+  </header>
+
+  <div class="dash-stats">
+    <div class="stat"><div class="stat-val" id="sTotal">0</div><div class="stat-label">Total de clientes</div></div>
+    <div class="stat"><div class="stat-val" id="sNovos">0</div><div class="stat-label">Aguardando revisão</div></div>
+    <div class="stat"><div class="stat-val" id="sSemana">0</div><div class="stat-label">Reuniões esta semana</div></div>
+    <div class="stat"><div class="stat-val" id="sConcluidos">0</div><div class="stat-label">Onboardings concluídos</div></div>
+  </div>
+
+  <div class="dash-toolbar">
+    <input class="dash-search" id="searchInput" placeholder="Buscar por nome ou empresa..." oninput="applyFilters()"/>
+    <div class="filter-btns">
+      <button class="filter-btn active" data-f="todos" onclick="setFilter('todos',this)">Todos</button>
+      <button class="filter-btn" data-f="novo" onclick="setFilter('novo',this)">Novos</button>
+      <button class="filter-btn" data-f="em_preparacao" onclick="setFilter('em_preparacao',this)">Em prep.</button>
+      <button class="filter-btn" data-f="concluido" onclick="setFilter('concluido',this)">Concluídos</button>
+    </div>
+  </div>
+
+  <div class="client-list" id="clientList">
+    <div class="empty-state" id="loadMsg">Carregando...</div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detailPanel">
+  <div class="dp-header">
+    <button class="dp-close" onclick="closeDetail()">×</button>
+    <div class="dp-title-wrap">
+      <div class="dp-name" id="d-nome"></div>
+      <div class="dp-meta" id="d-meta"></div>
+      <div class="dp-ts"  id="d-ts"></div>
+    </div>
+  </div>
+
+  <div class="dp-status">
+    <button class="sts-btn" data-s="novo"           onclick="setStatus('novo')">Novo</button>
+    <button class="sts-btn" data-s="em_preparacao"  onclick="setStatus('em_preparacao')">Em preparação</button>
+    <button class="sts-btn" data-s="concluido"      onclick="setStatus('concluido')">Concluído</button>
+  </div>
+
+  <div class="dp-body">
+    <div class="dp-section">
+      <div class="dp-sec-title">Identificação</div>
+      <div class="dp-row"><span class="dp-key">Nome</span><span class="dp-val" id="d-nome2"></span></div>
+      <div class="dp-row"><span class="dp-key">Empresa</span><span class="dp-val" id="d-empresa"></span></div>
+      <div class="dp-row"><span class="dp-key">Cargo</span><span class="dp-val" id="d-cargo"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Diagnóstico do negócio</div>
+      <div class="dp-row"><span class="dp-key">Segmento</span><span class="dp-val" id="d-segmento"></span></div>
+      <div class="dp-row"><span class="dp-key">Faturamento</span><span class="dp-val" id="d-fat"></span></div>
+      <div class="dp-row"><span class="dp-key">Maior desafio</span><span class="dp-val" id="d-desafio"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Objetivos com a EXÍMIO</div>
+      <div id="d-objs"></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Infraestrutura digital</div>
+      <div class="dp-row"><span class="dp-key">Identidade visual</span><span class="dp-val" id="d-idv"></span></div>
+      <div class="dp-row"><span class="dp-key">Site / Landing page</span><span class="dp-val" id="d-site"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Contexto comercial</div>
+      <div class="dp-row"><span class="dp-key">Investimento</span><span class="dp-val" id="d-inv"></span></div>
+      <div class="dp-row"><span class="dp-key">Canal de origem</span><span class="dp-val" id="d-canal"></span></div>
+      <div class="dp-row" id="d-obs-row"><span class="dp-key">Observações</span><span class="dp-val" id="d-obs"></span></div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-sec-title">Reunião agendada</div>
+      <div class="reuniao-box">
+        <div class="r-data" id="d-rdata"></div>
+        <div class="r-hora" id="d-rhora"></div>
+        <div class="r-tipo">Videoconferência · 60 minutos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp-footer">
+    <button class="copy-btn" id="copyBtn" onclick="copyResumo()">Copiar briefing completo</button>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+/* ══ CONFIG ══════════════════════════════════ */
+const FB = {
+  apiKey: "AIzaSyDinhE3hJjsVz9WLGZs_YPeuXZ7ayqHTAc",
+  authDomain: "eximio-onboarding.firebaseapp.com",
+  projectId: "eximio-onboarding",
+  storageBucket: "eximio-onboarding.firebasestorage.app",
+  messagingSenderId: "501113935815",
+  appId: "1:501113935815:web:2fd5e50b05091663cdebe2"
+};
+const PASS = 'EXIMIO@2026'; // ← altere a senha aqui
+
+/* ══ INIT ════════════════════════════════════ */
+firebase.initializeApp(FB);
+const db = firebase.firestore();
+
+let allDocs = [];
+let currentId = null;
+let activeFilter = 'todos';
+
+/* ══ LOGIN ═══════════════════════════════════ */
+document.getElementById('passInput').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogin(){
+  if(document.getElementById('passInput').value === PASS){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('visible');
+    loadClients();
+  } else {
+    document.getElementById('loginError').style.display='block';
+    document.getElementById('passInput').value='';
+  }
+}
+function doLogout(){
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('passInput').value='';
+  closeDetail();
+}
+
+/* ══ CARREGAR ════════════════════════════════ */
+async function loadClients(){
+  try {
+    const snap = await db.collection('onboarding').orderBy('timestamp','desc').get();
+    allDocs = snap.docs.map(d => ({id:d.id,...d.data()}));
+    applyFilters();
+    updateStats();
+  } catch(e){
+    document.getElementById('loadMsg').innerHTML = '⚠ Erro ao carregar. Verifique as regras do Firestore.';
+    console.error(e);
+  }
+}
+
+/* ══ STATS ═══════════════════════════════════ */
+function updateStats(){
+  const total = allDocs.length;
+  const novos = allDocs.filter(d=>!d.status||d.status==='novo').length;
+  const conc  = allDocs.filter(d=>d.status==='concluido').length;
+  const now   = new Date();
+  const wS    = new Date(now); wS.setDate(now.getDate()-now.getDay());
+  const wE    = new Date(wS);  wE.setDate(wS.getDate()+7);
+  const sem   = allDocs.filter(d=>{
+    if(!d.reuniao_data_iso) return false;
+    const rd = new Date(d.reuniao_data_iso+'T00:00:00');
+    return rd>=wS && rd<wE;
+  }).length;
+
+  document.getElementById('sTotal').textContent    = total;
+  document.getElementById('sNovos').textContent    = novos;
+  document.getElementById('sSemana').textContent   = sem;
+  document.getElementById('sConcluidos').textContent = conc;
+  document.getElementById('totalBadge').textContent  = total;
+}
+
+/* ══ FILTROS ═════════════════════════════════ */
+function setFilter(f, btn){
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters(){
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  let list = allDocs.filter(d=>{
+    const matchQ = (d.nome||'').toLowerCase().includes(q)||(d.empresa||'').toLowerCase().includes(q);
+    const s = d.status||'novo';
+    const matchF = activeFilter==='todos' || s===activeFilter;
+    return matchQ && matchF;
+  });
+  renderCards(list);
+}
+
+/* ══ CARDS ═══════════════════════════════════ */
+function renderCards(docs){
+  const list = document.getElementById('clientList');
+  list.querySelectorAll('.client-card').forEach(e=>e.remove());
+  document.getElementById('loadMsg').style.display='none';
+
+  if(!docs.length){
+    list.innerHTML = `<div class="empty-state"><div class="empty-star">✦</div>Nenhum cliente encontrado.</div>`;
+    return;
+  }
+
+  docs.forEach((doc,i)=>{
+    const s = doc.status||'novo';
+    const el = document.createElement('div');
+    el.className='client-card';
+    el.style.animationDelay=(i*.04)+'s';
+    el.innerHTML=`
+      <div class="sdot ${s}"></div>
+      <div class="card-info">
+        <div class="card-name">${doc.nome||'—'}</div>
+        <div class="card-sub">${doc.empresa||'—'}</div>
+      </div>
+      <div class="card-right">
+        <span class="card-seg">${doc.segmento||''}</span>
+        <span class="card-reuniao">${doc.reuniao_data_formatada||'—'}</span>
+        <span class="card-badge ${s}">${slabel(s)}</span>
+      </div>`;
+    el.addEventListener('click',()=>openDetail(doc));
+    list.appendChild(el);
+  });
+}
+function slabel(s){ return s==='novo'?'Novo':s==='em_preparacao'?'Em preparação':'Concluído'; }
+
+/* ══ DETAIL ══════════════════════════════════ */
+function openDetail(doc){
+  currentId = doc.id;
+  const s = doc.status||'novo';
+
+  set('d-nome',   doc.nome||'—');
+  set('d-nome2',  doc.nome||'—');
+  set('d-meta',   `${doc.empresa||'—'} · ${doc.cargo||'—'}`);
+  set('d-empresa',doc.empresa||'—');
+  set('d-cargo',  doc.cargo||'—');
+
+  let ts='—';
+  try{ ts = doc.timestamp?.toDate ? doc.timestamp.toDate().toLocaleString('pt-BR') : new Date(doc.timestamp).toLocaleString('pt-BR'); }catch(e){}
+  set('d-ts','Enviado em '+ts);
+
+  set('d-segmento', doc.segmento||'—');
+  set('d-fat',      doc.faturamento||'—');
+  set('d-desafio',  doc.desafio||'—');
+  set('d-idv',      doc.identidade_visual||'—');
+  set('d-site',     doc.site||'—');
+  set('d-inv',      doc.investimento||'—');
+  set('d-canal',    doc.canal_origem||'—');
+
+  const obs = doc.observacoes||'';
+  set('d-obs', obs||'—');
+  document.getElementById('d-obs-row').style.opacity = obs?'1':'0.4';
+
+  // Objetivos
+  const ow = document.getElementById('d-objs');
+  ow.innerHTML='';
+  (doc.objetivos||[]).forEach(o=>{
+    const t=document.createElement('span'); t.className='dp-tag'; t.textContent=o; ow.appendChild(t);
+  });
+  if(!(doc.objetivos||[]).length) ow.innerHTML='<span style="color:var(--muted);font-size:13px">—</span>';
+
+  // Reunião
+  const parts = (doc.reuniao_data_formatada||'').split(' · ');
+  set('d-rdata', parts[0]||'—');
+  set('d-rhora', doc.reuniao_horario ? doc.reuniao_horario+' · 60 min' : '—');
+
+  // Status buttons
+  highlightStatus(s);
+
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('visible');
+}
+
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('visible');
+  currentId=null;
+}
+
+function set(id,val){ const e=document.getElementById(id); if(e) e.textContent=val; }
+
+/* ══ STATUS ══════════════════════════════════ */
+function highlightStatus(s){
+  document.querySelectorAll('.sts-btn').forEach(b=>{
+    b.className='sts-btn';
+    if(b.dataset.s===s) b.classList.add('a-'+s);
+  });
+}
+async function setStatus(s){
+  if(!currentId) return;
+  await db.collection('onboarding').doc(currentId).update({status:s});
+  const idx=allDocs.findIndex(d=>d.id===currentId);
+  if(idx>-1) allDocs[idx].status=s;
+  highlightStatus(s);
+  applyFilters();
+  updateStats();
+}
+
+/* ══ COPIAR BRIEFING ═════════════════════════ */
+function copyResumo(){
+  const doc=allDocs.find(d=>d.id===currentId);
+  if(!doc) return;
+  const objs=(doc.objetivos||[]).join(', ')||'—';
+  const txt=
+`BRIEFING DE ONBOARDING — EXÍMIO
+${'─'.repeat(42)}
+CLIENTE         ${doc.nome||'—'}
+EMPRESA         ${doc.empresa||'—'}
+CARGO           ${doc.cargo||'—'}
+
+NEGÓCIO
+Segmento        ${doc.segmento||'—'}
+Faturamento     ${doc.faturamento||'—'}
+Desafio         ${doc.desafio||'—'}
+
+OBJETIVOS
+${objs}
+
+INFRAESTRUTURA
+Identidade      ${doc.identidade_visual||'—'}
+Site            ${doc.site||'—'}
+
+COMERCIAL
+Investimento    ${doc.investimento||'—'}
+Canal origem    ${doc.canal_origem||'—'}
+Observações     ${doc.observacoes||'—'}
+
+REUNIÃO
+${doc.reuniao_data_formatada||'—'}
+${'─'.repeat(42)}
+EXÍMIO · Curitiba, PR`;
+
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=document.getElementById('copyBtn');
+    b.textContent='Briefing copiado ✓'; b.classList.add('ok');
+    setTimeout(()=>{ b.textContent='Copiar briefing completo'; b.classList.remove('ok'); },2500);
+  });
+}
+</script>
+</body>
+</html>
