@@ -790,15 +790,14 @@
   <div class="step" id="step-21">
     <div class="inner">
       <p class="label-step">21 / 24</p>
-      <h2 class="q-title">Qual investimento mensal você está considerando?</h2>
-      <p class="q-sub">Gestão estratégica + mídia paga &nbsp;·&nbsp; <span style="color:var(--dourado)">Mínimo recomendado: R$ 1.500/mês</span></p>
-      <div class="choices two" id="c21">
-        <div class="card" onclick="pick(21,'R$ 1.500 – R$ 3.000/mês',this)"><span class="card-letter">A</span><div class="card-text">R$ 1.500 – R$ 3.000/mês</div></div>
-        <div class="card" onclick="pick(21,'R$ 3.000 – R$ 6.000/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 3.000 – R$ 6.000/mês</div></div>
-        <div class="card" onclick="pick(21,'R$ 6.000 – R$ 12.000/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 6.000 – R$ 12.000/mês</div></div>
-        <div class="card" onclick="pick(21,'R$ 12.000 – R$ 25.000/mês',this)"><span class="card-letter">D</span><div class="card-text">R$ 12.000 – R$ 25.000/mês</div></div>
-        <div class="card" onclick="pick(21,'Acima de R$ 25.000/mês',this)"><span class="card-letter">E</span><div class="card-text">Acima de R$ 25.000/mês</div></div>
-        <div class="card" onclick="pick(21,'Ainda estou avaliando',this)"><span class="card-letter">F</span><div class="card-text">Ainda estou avaliando</div></div>
+      <h2 class="q-title">Qual será o orçamento mensal de campanha?</h2>
+      <p class="q-sub">Valor destinado exclusivamente à veiculação dos anúncios — <span style="color:var(--dourado)">não inclui o valor de serviço</span></p>
+      <input class="txt-input" id="i-investimento" type="text" placeholder="Ex.: R$ 3.000,00" autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b21" onclick="advance(21,'i-investimento',22)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
       </div>
     </div>
   </div>
@@ -1028,12 +1027,13 @@ function updateCounter(){
 ═══════════════════════════════════════════════════ */
 // Inputs de texto simples (Enter para avançar)
 const _txtInputs = [
-  { f:'nome',     step:1,  next:2  },
-  { f:'empresa',  step:2,  next:3  },
-  { f:'cargo',    step:3,  next:4  },
-  { f:'email',    step:4,  next:5  },
-  { f:'regioes',  step:17, next:18 },
-  { f:'whatsapp', step:18, next:19 },
+  { f:'nome',        step:1,  next:2  },
+  { f:'empresa',     step:2,  next:3  },
+  { f:'cargo',       step:3,  next:4  },
+  { f:'email',       step:4,  next:5  },
+  { f:'regioes',     step:17, next:18 },
+  { f:'whatsapp',    step:18, next:19 },
+  { f:'investimento',step:21, next:22 },
 ];
 _txtInputs.forEach(({f, step, next})=>{
   const inp = document.getElementById('i-'+f);
@@ -1226,7 +1226,7 @@ function buildPayload(){
     whatsapp:           document.getElementById('i-whatsapp').value.trim(),
     identidade_visual:  A.s19 || '',
     site:               A.s20 || '',
-    investimento:       A.s21 || '',
+    investimento:       document.getElementById('i-investimento').value.trim(),
     disponivel_videos:  A.s22 || '',
     canal_origem:       A.s23 || '',
     observacoes:        document.getElementById('i-obs').value.trim(),
