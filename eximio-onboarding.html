@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXÍMIO — Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul: #0F1C2E;
+      --azul-mid: #162438;
+      --offwhite: #F2F0EA;
+      --dourado: #C7A977;
+      --dourado-dim: rgba(199,169,119,0.15);
+      --text-muted: rgba(242,240,234,0.35);
+      --text-half: rgba(242,240,234,0.55);
+      --border: rgba(242,240,234,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: var(--azul);
+      color: var(--offwhite);
+    }
+
+    /* ── CANVAS DE PARTÍCULAS ─────────────────────── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+    /* ── BARRA DE PROGRESSO ───────────────────────── */
+    #progressBar {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: var(--dourado);
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+      z-index: 200;
+    }
+
+    /* ── LOGO ─────────────────────────────────────── */
+    #logoWrap {
+      position: fixed; top: 28px; left: 36px; z-index: 150;
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; animation: fadeIn 1s 0.5s ease both;
+    }
+    #logoWrap .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px; letter-spacing: 0.22em;
+      color: var(--offwhite); opacity: 0.7;
+      text-transform: uppercase;
+    }
+
+    /* ── CONTADOR ─────────────────────────────────── */
+    #stepCounter {
+      position: fixed; top: 28px; right: 36px; z-index: 150;
+      font-size: 12px; letter-spacing: 0.14em;
+      color: var(--dourado); opacity: 0.75;
+      transition: opacity 0.3s;
+    }
+
+    /* ── CONTAINER PRINCIPAL ──────────────────────── */
+    #formWrap {
+      position: relative; width: 100%; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px 24px 60px;
+      z-index: 10;
+    }
+
+    /* ── STEPS ────────────────────────────────────── */
+    .step {
+      position: absolute; width: 100%; max-width: 680px;
+      padding: 0 20px;
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.55s cubic-bezier(0.4,0,0.2,1);
+      pointer-events: none; will-change: transform, opacity;
+    }
+    .step.active { opacity: 1; transform: translateY(0); pointer-events: all; }
+    .step.exit   { opacity: 0; transform: translateY(-36px); }
+
+    /* ── SCROLL INTERNO ───────────────────────────── */
+    .inner {
+      max-height: calc(100vh - 160px);
+      overflow-y: auto; scrollbar-width: none;
+      padding-right: 4px;
+    }
+    .inner::-webkit-scrollbar { display: none; }
+
+    /* ── TIPOGRAFIA ───────────────────────────────── */
+    .label-step {
+      font-size: 11px; letter-spacing: 0.2em;
+      color: var(--dourado); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .label-step::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--dourado-dim), transparent);
+    }
+
+    .q-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4.5vw, 42px);
+      line-height: 1.25; margin-bottom: 10px;
+    }
+    .q-sub {
+      font-size: 14px; color: var(--text-half);
+      line-height: 1.6; margin-bottom: 36px; font-weight: 300;
+    }
+
+    /* ── INPUTS DE TEXTO ──────────────────────────── */
+    .txt-input {
+      background: none; border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--offwhite);
+      font-size: clamp(20px, 3vw, 30px);
+      font-family: 'Playfair Display', serif;
+      width: 100%; padding: 14px 0; outline: none;
+      transition: border-color 0.35s;
+      caret-color: var(--dourado);
+    }
+    .txt-input::placeholder { color: var(--text-muted); }
+    .txt-input:focus { border-bottom-color: var(--dourado); }
+
+    textarea.txt-input {
+      font-size: 17px; resize: none;
+      height: 110px; line-height: 1.6;
+    }
+
+    /* ── CARDS DE ESCOLHA ─────────────────────────── */
+    .choices {
+      display: grid; gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      margin-bottom: 28px;
+    }
+    .choices.two { grid-template-columns: 1fr 1fr; }
+    .choices.three { grid-template-columns: 1fr 1fr 1fr; }
+    .choices.one { grid-template-columns: 1fr; }
+
+    .card {
+      border: 1px solid var(--border);
+      padding: 16px 18px; cursor: pointer;
+      transition: border-color 0.22s, background 0.22s, transform 0.15s;
+      position: relative; overflow: hidden;
+      user-select: none;
+    }
+    .card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 60% 40%, rgba(199,169,119,0.12), transparent 70%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover { border-color: rgba(199,169,119,0.4); transform: translateY(-1px); }
+    .card:hover::after { opacity: 1; }
+    .card.selected {
+      border-color: var(--dourado);
+      background: rgba(199,169,119,0.07);
+    }
+    .card.selected .card-letter {
+      background: var(--dourado); color: var(--azul);
+    }
+    .card.selected::after { opacity: 0; }
+
+    .card-letter {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.05em;
+      background: rgba(242,240,234,0.08); color: var(--text-muted);
+      width: 22px; height: 22px; display: flex;
+      align-items: center; justify-content: center;
+      margin-bottom: 10px;
+      transition: background 0.22s, color 0.22s;
+      position: relative; z-index: 1;
+    }
+    .card-text {
+      font-size: 13.5px; line-height: 1.4;
+      position: relative; z-index: 1;
+    }
+
+    /* ── BOTÃO ────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--dourado); color: var(--azul);
+      border: none; padding: 15px 36px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.25s, transform 0.2s;
+      margin-top: 28px;
+    }
+    .btn:hover:not(:disabled) { background: var(--offwhite); transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    .btn .arr { transition: transform 0.25s; }
+    .btn:hover:not(:disabled) .arr { transform: translateX(5px); }
+
+    .hint {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 0.07em; margin-top: 10px;
+    }
+
+    /* ── BOAS-VINDAS ──────────────────────────────── */
+    #step-0 { text-align: center; }
+    #step-0 .inner { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 160px); }
+
+    .welcome-star { margin-bottom: 44px; }
+    .welcome-tag {
+      font-size: 11px; letter-spacing: 0.22em;
+      color: var(--dourado); text-transform: uppercase;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.8s 0.3s ease both;
+    }
+    .welcome-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5.5vw, 54px);
+      line-height: 1.2; margin-bottom: 22px;
+      animation: fadeInUp 0.8s 0.5s ease both;
+    }
+    .welcome-body {
+      font-size: 15px; color: var(--text-half); line-height: 1.75;
+      max-width: 460px; margin: 0 auto 44px; font-weight: 300;
+      animation: fadeInUp 0.8s 0.7s ease both;
+    }
+    .welcome-cta { animation: fadeInUp 0.8s 0.9s ease both; }
+    .welcome-meta {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 0.1em; margin-top: 16px;
+      animation: fadeInUp 0.8s 1.05s ease both;
+    }
+
+    /* ── STAR SVG (bicolor) ───────────────────────── */
+    .star-bicolor .top { fill: var(--dourado); }
+    .star-bicolor .bot { fill: #1d3350; }
+
+    /* ── CALENDÁRIO ───────────────────────────────── */
+    .cal-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+    }
+    @media (max-width: 620px) { .cal-wrapper { grid-template-columns: 1fr; } }
+
+    .cal-header {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 14px;
+    }
+    .cal-month {
+      font-size: 13px; letter-spacing: 0.12em;
+      color: var(--dourado); font-weight: 500; text-transform: uppercase;
+    }
+    .cal-nav-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--offwhite); width: 28px; height: 28px;
+      cursor: pointer; font-size: 15px; display: flex;
+      align-items: center; justify-content: center;
+      transition: border-color 0.2s;
+    }
+    .cal-nav-btn:hover { border-color: var(--dourado); }
+
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+    }
+    .cal-dh {
+      text-align: center; font-size: 10px;
+      color: var(--text-muted); letter-spacing: 0.05em;
+      padding: 4px 0 8px;
+    }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center;
+      justify-content: center; font-size: 13px;
+    }
+    .cal-day.avail {
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      border-radius: 2px;
+    }
+    .cal-day.avail:hover { background: var(--dourado-dim); color: var(--dourado); }
+    .cal-day.avail.sel { background: var(--dourado); color: var(--azul); font-weight: 600; }
+    .cal-day.avail.today { color: var(--dourado); }
+    .cal-day.off { color: var(--text-muted); opacity: 0.3; }
+    .cal-day.past { opacity: 0.15; }
+
+    /* Time slots */
+    .ts-title {
+      font-size: 11px; letter-spacing: 0.14em;
+      color: var(--dourado); text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .ts-list { display: grid; gap: 7px; }
+    .ts-slot {
+      border: 1px solid var(--border); padding: 13px 16px;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .ts-slot:hover { border-color: rgba(199,169,119,0.5); }
+    .ts-slot.sel { border-color: var(--dourado); background: var(--dourado-dim); color: var(--dourado); }
+    .ts-dur { font-size: 11px; color: var(--text-muted); }
+
+    /* ── TELA FINAL ───────────────────────────────── */
+    #step-14 { text-align: center; }
+    #step-14 .inner {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: calc(100vh - 160px);
+    }
+    .ty-star { margin-bottom: 36px; animation: pulseStar 3s ease infinite; }
+    @keyframes pulseStar {
+      0%,100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+    .ty-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4.5vw, 46px);
+      line-height: 1.2; margin-bottom: 16px;
+      animation: fadeInUp 0.8s 0.2s ease both;
+    }
+    .ty-sub {
+      font-size: 14px; color: var(--text-half); line-height: 1.7;
+      max-width: 440px; font-weight: 300; margin-bottom: 40px;
+      animation: fadeInUp 0.8s 0.4s ease both;
+    }
+
+    .summary-box {
+      border: 1px solid rgba(199,169,119,0.3);
+      padding: 24px 28px; text-align: left;
+      max-width: 420px; width: 100%;
+      animation: fadeInUp 0.8s 0.6s ease both;
+    }
+    .summary-label {
+      font-size: 10px; letter-spacing: 0.18em; color: var(--dourado);
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .sum-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 14px; padding: 9px 0;
+      border-bottom: 1px solid rgba(242,240,234,0.05);
+    }
+    .sum-row:last-child { border-bottom: none; }
+    .sum-icon { color: var(--dourado); opacity: 0.7; flex-shrink: 0; margin-top: 1px; }
+
+    .ty-footer {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 0.1em; margin-top: 32px;
+      animation: fadeInUp 0.8s 0.8s ease both;
+    }
+
+    /* ── LOADING OVERLAY ─────────────────────────── */
+    #loadingOverlay {
+      position: fixed; inset: 0; background: var(--azul);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 500; opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    #loadingOverlay.visible { opacity: 1; pointer-events: all; }
+
+    .loading-star {
+      width: 52px; height: 52px;
+      animation: spinStar 1.4s linear infinite;
+      margin-bottom: 28px;
+    }
+    .loading-label {
+      font-size: 12px; letter-spacing: 0.18em;
+      color: var(--dourado); text-transform: uppercase;
+      animation: pulse 1.4s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+    }
+
+    /* ── ERRO INLINE ──────────────────────────────── */
+    #webhookError {
+      display: none;
+      border: 1px solid rgba(199,100,100,0.35);
+      background: rgba(199,100,100,0.06);
+      padding: 12px 16px; margin-top: 14px;
+      font-size: 13px; color: rgba(242,240,234,0.65);
+      line-height: 1.5;
+    }
+    #webhookError a {
+      color: var(--dourado); cursor: pointer;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+
+    /* ── DICA DE NAVEGAÇÃO ────────────────────────── */
+    #navHint {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px; color: rgba(242,240,234,0.18);
+      letter-spacing: 0.08em; white-space: nowrap;
+      display: flex; align-items: center; gap: 12px;
+      pointer-events: none;
+    }
+    .dot { width: 3px; height: 3px; background: var(--dourado); border-radius: 50%; opacity: 0.5; }
+
+    /* ── ANIMAÇÕES GLOBAIS ────────────────────────── */
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spinStar { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 520px) {
+      #logoWrap { left: 20px; top: 20px; }
+      #stepCounter { right: 20px; top: 20px; }
+      #formWrap { padding: 68px 12px 48px; }
+      .step { padding: 0; }
+      .choices, .choices.two, .choices.three { grid-template-columns: 1fr; }
+      .choices.two { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Partículas -->
+<canvas id="particles"></canvas>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay">
+  <svg class="loading-star" viewBox="0 0 100 100">
+    <defs>
+      <clipPath id="lo-top"><rect x="0" y="0" width="100" height="50"/></clipPath>
+      <clipPath id="lo-bot"><rect x="0" y="50" width="100" height="50"/></clipPath>
+    </defs>
+    <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+      fill="#C7A977" clip-path="url(#lo-top)"/>
+    <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+      fill="rgba(242,240,234,0.3)" clip-path="url(#lo-bot)"/>
+  </svg>
+  <p class="loading-label">Registrando informações...</p>
+</div>
+
+<!-- Progresso -->
+<div id="progressBar" style="width:0%"></div>
+
+<!-- Logo -->
+<div id="logoWrap">
+  <svg width="22" height="22" viewBox="0 0 100 100">
+    <defs>
+      <clipPath id="topHalf"><rect x="0" y="0" width="100" height="50"/></clipPath>
+      <clipPath id="botHalf"><rect x="0" y="50" width="100" height="50"/></clipPath>
+    </defs>
+    <polygon class="star-top"
+      points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+      fill="#C7A977" clip-path="url(#topHalf)"/>
+    <polygon class="star-bot"
+      points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+      fill="rgba(242,240,234,0.45)" clip-path="url(#botHalf)"/>
+  </svg>
+  <span class="logo-text">EXÍMIO</span>
+</div>
+
+<!-- Contador -->
+<div id="stepCounter"></div>
+
+<!-- Formulário -->
+<div id="formWrap">
+
+  <!-- ░░ STEP 0 — BOAS-VINDAS ░░ -->
+  <div class="step active" id="step-0">
+    <div class="inner">
+      <div class="welcome-star" style="animation: spinStar 24s linear infinite; width:72px; height:72px;">
+        <svg viewBox="0 0 100 100" width="72" height="72">
+          <defs>
+            <clipPath id="s-top"><rect x="0" y="0" width="100" height="50"/></clipPath>
+            <clipPath id="s-bot"><rect x="0" y="50" width="100" height="50"/></clipPath>
+          </defs>
+          <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+            fill="#C7A977" clip-path="url(#s-top)"/>
+          <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+            fill="rgba(242,240,234,0.35)" clip-path="url(#s-bot)"/>
+        </svg>
+      </div>
+      <p class="welcome-tag">EXÍMIO — Onboarding</p>
+      <h1 class="welcome-title">Antes de começarmos,<br>precisamos te conhecer.</h1>
+      <p class="welcome-body">Este formulário nos ajuda a entender profundamente o seu negócio para que a Reunião de Onboarding seja estratégica, objetiva e focada nos seus resultados.</p>
+      <div class="welcome-cta">
+        <button class="btn" onclick="goTo(1)">Começar <span class="arr">→</span></button>
+      </div>
+      <p class="welcome-meta">Aproximadamente 4 minutos &nbsp;·&nbsp; 12 perguntas</p>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 1 — NOME ░░ -->
+  <div class="step" id="step-1">
+    <div class="inner">
+      <p class="label-step">01 / 12</p>
+      <h2 class="q-title">Qual é o seu nome?</h2>
+      <input class="txt-input" id="i-nome" type="text" placeholder="Seu nome completo" autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b1" onclick="advance(1,'i-nome',2)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 2 — EMPRESA ░░ -->
+  <div class="step" id="step-2">
+    <div class="inner">
+      <p class="label-step">02 / 12</p>
+      <h2 class="q-title">Como se chama a sua empresa?</h2>
+      <input class="txt-input" id="i-empresa" type="text" placeholder="Nome da empresa" autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b2" onclick="advance(2,'i-empresa',3)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 3 — CARGO ░░ -->
+  <div class="step" id="step-3">
+    <div class="inner">
+      <p class="label-step">03 / 12</p>
+      <h2 class="q-title">Qual é o seu cargo?</h2>
+      <input class="txt-input" id="i-cargo" type="text" placeholder="CEO, Sócio, Diretor Comercial..." autocomplete="off" spellcheck="false" />
+      <div>
+        <button class="btn" id="b3" onclick="advance(3,'i-cargo',4)" disabled>
+          Continuar <span class="arr">→</span>
+        </button>
+        <p class="hint">Pressione Enter ↵ para continuar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 4 — SEGMENTO ░░ -->
+  <div class="step" id="step-4">
+    <div class="inner">
+      <p class="label-step">04 / 12</p>
+      <h2 class="q-title">Em qual segmento você atua?</h2>
+      <p class="q-sub">Escolha o que melhor representa seu negócio</p>
+      <div class="choices" id="c4">
+        <div class="card" onclick="pick(4,'Jurídico / Advocacia',this)"><span class="card-letter">A</span><div class="card-text">Jurídico / Advocacia</div></div>
+        <div class="card" onclick="pick(4,'Saúde / Medicina',this)"><span class="card-letter">B</span><div class="card-text">Saúde / Medicina</div></div>
+        <div class="card" onclick="pick(4,'Tecnologia / SaaS',this)"><span class="card-letter">C</span><div class="card-text">Tecnologia / SaaS</div></div>
+        <div class="card" onclick="pick(4,'Serviços B2B',this)"><span class="card-letter">D</span><div class="card-text">Serviços B2B</div></div>
+        <div class="card" onclick="pick(4,'Varejo / E-commerce',this)"><span class="card-letter">E</span><div class="card-text">Varejo / E-commerce</div></div>
+        <div class="card" onclick="pick(4,'Educação / Infoprodutos',this)"><span class="card-letter">F</span><div class="card-text">Educação / Infoprodutos</div></div>
+        <div class="card" onclick="pick(4,'Imóveis / Construção',this)"><span class="card-letter">G</span><div class="card-text">Imóveis / Construção</div></div>
+        <div class="card" onclick="pick(4,'Outro segmento',this)"><span class="card-letter">H</span><div class="card-text">Outro segmento</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 5 — FATURAMENTO ░░ -->
+  <div class="step" id="step-5">
+    <div class="inner">
+      <p class="label-step">05 / 12</p>
+      <h2 class="q-title">Qual é o faturamento mensal da sua empresa?</h2>
+      <p class="q-sub">Isso nos ajuda a calibrar a estratégia ideal</p>
+      <div class="choices two" id="c5">
+        <div class="card" onclick="pick(5,'Até R$ 30 mil/mês',this)"><span class="card-letter">A</span><div class="card-text">Até R$ 30 mil/mês</div></div>
+        <div class="card" onclick="pick(5,'R$ 30k – R$ 100k/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 30k – R$ 100k/mês</div></div>
+        <div class="card" onclick="pick(5,'R$ 100k – R$ 500k/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 100k – R$ 500k/mês</div></div>
+        <div class="card" onclick="pick(5,'Acima de R$ 500k/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 500k/mês</div></div>
+        <div class="card" onclick="pick(5,'Prefiro não informar',this)"><span class="card-letter">E</span><div class="card-text">Prefiro não informar</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 6 — DESAFIO ░░ -->
+  <div class="step" id="step-6">
+    <div class="inner">
+      <p class="label-step">06 / 12</p>
+      <h2 class="q-title">Qual é o seu maior desafio hoje?</h2>
+      <p class="q-sub">Seja honesto — isso define o que vamos priorizar juntos</p>
+      <div class="choices" id="c6">
+        <div class="card" onclick="pick(6,'Gerar leads qualificados',this)"><span class="card-letter">A</span><div class="card-text">Gerar leads qualificados</div></div>
+        <div class="card" onclick="pick(6,'Construir autoridade no mercado',this)"><span class="card-letter">B</span><div class="card-text">Construir autoridade no mercado</div></div>
+        <div class="card" onclick="pick(6,'Escalar vendas de forma previsível',this)"><span class="card-letter">C</span><div class="card-text">Escalar vendas de forma previsível</div></div>
+        <div class="card" onclick="pick(6,'Estruturar presença digital do zero',this)"><span class="card-letter">D</span><div class="card-text">Estruturar presença digital do zero</div></div>
+        <div class="card" onclick="pick(6,'Tráfego pago mal gerenciado',this)"><span class="card-letter">E</span><div class="card-text">Tráfego pago mal gerenciado</div></div>
+        <div class="card" onclick="pick(6,'Falta de estratégia clara',this)"><span class="card-letter">F</span><div class="card-text">Falta de estratégia clara</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 7 — OBJETIVOS (múltiplos) ░░ -->
+  <div class="step" id="step-7">
+    <div class="inner">
+      <p class="label-step">07 / 12</p>
+      <h2 class="q-title">O que você espera alcançar com a EXÍMIO?</h2>
+      <p class="q-sub">Selecione tudo que se aplica — pode marcar mais de um</p>
+      <div class="choices" id="c7">
+        <div class="card" onclick="multi(7,'Aumentar volume de leads',this)"><span class="card-letter">A</span><div class="card-text">Aumentar volume de leads</div></div>
+        <div class="card" onclick="multi(7,'Melhorar qualidade dos leads',this)"><span class="card-letter">B</span><div class="card-text">Melhorar qualidade dos leads</div></div>
+        <div class="card" onclick="multi(7,'Construir autoridade e reputação',this)"><span class="card-letter">C</span><div class="card-text">Construir autoridade e reputação</div></div>
+        <div class="card" onclick="multi(7,'Profissionalizar a comunicação',this)"><span class="card-letter">D</span><div class="card-text">Profissionalizar a comunicação</div></div>
+        <div class="card" onclick="multi(7,'Ter previsibilidade de resultados',this)"><span class="card-letter">E</span><div class="card-text">Ter previsibilidade de resultados</div></div>
+        <div class="card" onclick="multi(7,'Expandir para novos mercados',this)"><span class="card-letter">F</span><div class="card-text">Expandir para novos mercados</div></div>
+      </div>
+      <button class="btn" id="b7" onclick="goTo(8)" disabled>Continuar <span class="arr">→</span></button>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 8 — IDENTIDADE VISUAL ░░ -->
+  <div class="step" id="step-8">
+    <div class="inner">
+      <p class="label-step">08 / 12</p>
+      <h2 class="q-title">Você já possui identidade visual?</h2>
+      <p class="q-sub">Logo, cores, tipografia, manual de marca...</p>
+      <div class="choices three" id="c8">
+        <div class="card" onclick="pick(8,'Sim, completa',this)"><span class="card-letter">A</span><div class="card-text">Sim, completa</div></div>
+        <div class="card" onclick="pick(8,'Parcial / em desenvolvimento',this)"><span class="card-letter">B</span><div class="card-text">Parcial / em desenvolvimento</div></div>
+        <div class="card" onclick="pick(8,'Ainda não possuo',this)"><span class="card-letter">C</span><div class="card-text">Ainda não possuo</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 9 — SITE ░░ -->
+  <div class="step" id="step-9">
+    <div class="inner">
+      <p class="label-step">09 / 12</p>
+      <h2 class="q-title">Você tem site ou landing page ativa?</h2>
+      <div class="choices three" id="c9">
+        <div class="card" onclick="pick(9,'Sim, funcionando bem',this)"><span class="card-letter">A</span><div class="card-text">Sim, funcionando bem</div></div>
+        <div class="card" onclick="pick(9,'Sim, mas precisa melhorar',this)"><span class="card-letter">B</span><div class="card-text">Sim, mas precisa melhorar</div></div>
+        <div class="card" onclick="pick(9,'Não tenho ainda',this)"><span class="card-letter">C</span><div class="card-text">Não tenho ainda</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 10 — INVESTIMENTO ░░ -->
+  <div class="step" id="step-10">
+    <div class="inner">
+      <p class="label-step">10 / 12</p>
+      <h2 class="q-title">Qual investimento mensal você está considerando?</h2>
+      <p class="q-sub">Valor referente à gestão estratégica + mídia paga</p>
+      <div class="choices two" id="c10">
+        <div class="card" onclick="pick(10,'Até R$ 3.000/mês',this)"><span class="card-letter">A</span><div class="card-text">Até R$ 3.000/mês</div></div>
+        <div class="card" onclick="pick(10,'R$ 3.000 – R$ 8.000/mês',this)"><span class="card-letter">B</span><div class="card-text">R$ 3.000 – R$ 8.000/mês</div></div>
+        <div class="card" onclick="pick(10,'R$ 8.000 – R$ 20.000/mês',this)"><span class="card-letter">C</span><div class="card-text">R$ 8.000 – R$ 20.000/mês</div></div>
+        <div class="card" onclick="pick(10,'Acima de R$ 20.000/mês',this)"><span class="card-letter">D</span><div class="card-text">Acima de R$ 20.000/mês</div></div>
+        <div class="card" onclick="pick(10,'Ainda estou avaliando',this)"><span class="card-letter">E</span><div class="card-text">Ainda estou avaliando</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 11 — COMO CHEGOU ░░ -->
+  <div class="step" id="step-11">
+    <div class="inner">
+      <p class="label-step">11 / 12</p>
+      <h2 class="q-title">Como você chegou até a EXÍMIO?</h2>
+      <div class="choices three" id="c11">
+        <div class="card" onclick="pick(11,'Indicação',this)"><span class="card-letter">A</span><div class="card-text">Indicação de alguém</div></div>
+        <div class="card" onclick="pick(11,'Instagram',this)"><span class="card-letter">B</span><div class="card-text">Instagram</div></div>
+        <div class="card" onclick="pick(11,'LinkedIn',this)"><span class="card-letter">C</span><div class="card-text">LinkedIn</div></div>
+        <div class="card" onclick="pick(11,'Google',this)"><span class="card-letter">D</span><div class="card-text">Google</div></div>
+        <div class="card" onclick="pick(11,'Prospecção ativa',this)"><span class="card-letter">E</span><div class="card-text">Prospecção ativa</div></div>
+        <div class="card" onclick="pick(11,'Outro canal',this)"><span class="card-letter">F</span><div class="card-text">Outro canal</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 12 — OBSERVAÇÕES ░░ -->
+  <div class="step" id="step-12">
+    <div class="inner">
+      <p class="label-step">12 / 12</p>
+      <h2 class="q-title">Há algo mais que queira nos contar antes da reunião?</h2>
+      <p class="q-sub">Contexto adicional, expectativas, dúvidas... <span style="color:var(--dourado)">Opcional.</span></p>
+      <textarea class="txt-input" id="i-obs" placeholder="Escreva livremente..."></textarea>
+      <div>
+        <button class="btn" onclick="goTo(13)">Agendar reunião <span class="arr">→</span></button>
+        <p class="hint">Campo opcional — pode pular</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 13 — AGENDAMENTO ░░ -->
+  <div class="step" id="step-13">
+    <div class="inner">
+      <p class="label-step" style="color:var(--dourado);">✦ QUASE LÁ</p>
+      <h2 class="q-title">Escolha o melhor momento para a<br>Reunião de Onboarding.</h2>
+      <p class="q-sub" style="margin-bottom:24px;">60 minutos · Videoconferência</p>
+      <div class="cal-wrapper">
+        <!-- Calendário -->
+        <div>
+          <div class="cal-header">
+            <span class="cal-month" id="calLabel"></span>
+            <div style="display:flex;gap:6px;">
+              <button class="cal-nav-btn" onclick="shiftMonth(-1)">‹</button>
+              <button class="cal-nav-btn" onclick="shiftMonth(1)">›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <!-- Horários -->
+        <div id="tsPanel" style="display:none;">
+          <p class="ts-title" id="tsDate"></p>
+          <div class="ts-list" id="tsList"></div>
+        </div>
+      </div>
+      <button class="btn" id="b13" onclick="submitForm()" disabled style="margin-top:20px;">
+        Confirmar reunião <span class="arr">→</span>
+      </button>
+      <div id="webhookError">
+        ⚠ Não foi possível enviar os dados automaticamente.
+        <a onclick="submitForm(true)">Tentar novamente</a> ou
+        <a onclick="goTo(14); finishLocally()">continuar mesmo assim →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ STEP 14 — CONFIRMAÇÃO ░░ -->
+  <div class="step" id="step-14">
+    <div class="inner">
+      <div class="ty-star" style="width:64px;height:64px;">
+        <svg viewBox="0 0 100 100" width="64" height="64">
+          <defs>
+            <clipPath id="ty-top"><rect x="0" y="0" width="100" height="50"/></clipPath>
+            <clipPath id="ty-bot"><rect x="0" y="50" width="100" height="50"/></clipPath>
+          </defs>
+          <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+            fill="#C7A977" clip-path="url(#ty-top)"/>
+          <polygon points="50,5 56.9,33.4 81.8,18.2 66.6,43.1 95,50 66.6,56.9 81.8,81.8 56.9,66.6 50,95 43.1,66.6 18.2,81.8 33.4,56.9 5,50 33.4,43.1 18.2,18.2 43.1,33.4"
+            fill="rgba(242,240,234,0.35)" clip-path="url(#ty-bot)"/>
+        </svg>
+      </div>
+      <h2 class="ty-title">Tudo certo.<br>A EXÍMIO te espera.</h2>
+      <p class="ty-sub">Suas informações foram registradas e sua reunião está agendada. Em breve nossa equipe irá confirmar por e-mail.</p>
+      <div class="summary-box">
+        <p class="summary-label">Resumo da reunião</p>
+        <div class="sum-row"><span class="sum-icon">✦</span><span id="s-nome"></span></div>
+        <div class="sum-row"><span class="sum-icon">◈</span><span id="s-empresa"></span></div>
+        <div class="sum-row"><span class="sum-icon">◷</span><span id="s-dt"></span></div>
+        <div class="sum-row"><span class="sum-icon">⊞</span><span>Videoconferência · 60 minutos</span></div>
+      </div>
+      <p class="ty-footer">EXÍMIO &nbsp;·&nbsp; Curitiba, PR</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dica de navegação -->
+<div id="navHint">
+  <span>Tab para navegar</span>
+  <span class="dot"></span>
+  <span>Enter para confirmar</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PARTÍCULAS
+═══════════════════════════════════════════════════ */
+(function(){
+  const c = document.getElementById('particles');
+  const ctx = c.getContext('2d');
+  let W, H, pts = [];
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+
+  function init(){
+    pts = [];
+    const n = Math.floor((W * H) / 18000);
+    for(let i=0; i<n; i++){
+      pts.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: Math.random()*1.2+0.3,
+        vx: (Math.random()-.5)*0.18,
+        vy: (Math.random()-.5)*0.18,
+        o: Math.random()*0.4+0.1
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(199,169,119,${p.o})`;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize(); init(); draw();
+  window.addEventListener('resize', ()=>{ resize(); init(); });
+})();
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let cur = 0;
+const TOTAL = 14;
+const A = {};           // respostas simples
+const M = { 7: [] };   // respostas múltiplas
+
+let selDate = null, selTime = null;
+const today = new Date(); today.setHours(0,0,0,0);
+let calY = today.getFullYear(), calM = today.getMonth();
+
+/* ═══════════════════════════════════════════════════
+   NAVEGAÇÃO
+═══════════════════════════════════════════════════ */
+function goTo(n){
+  const from = document.getElementById('step-'+cur);
+  const to   = document.getElementById('step-'+n);
+  if(!from || !to) return;
+
+  from.classList.add('exit');
+  setTimeout(()=>{
+    from.classList.remove('active','exit');
+    to.classList.add('active');
+    cur = n;
+    updateProgress();
+    updateCounter();
+    const inp = to.querySelector('input, textarea');
+    if(inp) setTimeout(()=>inp.focus(), 320);
+    if(n === 13) renderCal();
+  }, 450);
+}
+
+function updateProgress(){
+  document.getElementById('progressBar').style.width = (cur/TOTAL*100)+'%';
+}
+
+function updateCounter(){
+  const el = document.getElementById('stepCounter');
+  el.textContent = (cur>0 && cur<14) ? (String(cur).padStart(2,'0')+' / 12') : '';
+}
+
+/* ═══════════════════════════════════════════════════
+   INPUTS DE TEXTO
+═══════════════════════════════════════════════════ */
+['nome','empresa','cargo'].forEach((f,i)=>{
+  const step = i+1;
+  const inp  = document.getElementById('i-'+f);
+  const btn  = document.getElementById('b'+step);
+  if(!inp) return;
+  inp.addEventListener('input', ()=>{ btn.disabled = inp.value.trim().length < 2; });
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && inp.value.trim().length>=2){
+      A[f] = inp.value.trim();
+      goTo(step+1);
+    }
+  });
+});
+
+function advance(step, inputId, next){
+  const val = document.getElementById(inputId).value.trim();
+  if(val.length < 2) return;
+  A[inputId.replace('i-','')] = val;
+  goTo(next);
+}
+
+/* ═══════════════════════════════════════════════════
+   ESCOLHA ÚNICA (auto-avança)
+═══════════════════════════════════════════════════ */
+function pick(step, val, el){
+  document.querySelectorAll('#c'+step+' .card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  A['s'+step] = val;
+
+  // Efeito de brilho antes de avançar
+  el.style.transition = 'all 0.15s ease';
+  setTimeout(()=>goTo(step+1), 370);
+}
+
+/* ═══════════════════════════════════════════════════
+   ESCOLHA MÚLTIPLA
+═══════════════════════════════════════════════════ */
+function multi(step, val, el){
+  if(!M[step]) M[step]=[];
+  const idx = M[step].indexOf(val);
+  if(idx>-1){ M[step].splice(idx,1); el.classList.remove('selected'); }
+  else       { M[step].push(val);    el.classList.add('selected'); }
+  const btn = document.getElementById('b'+step);
+  if(btn) btn.disabled = M[step].length===0;
+}
+
+/* ═══════════════════════════════════════════════════
+   CALENDÁRIO
+═══════════════════════════════════════════════════ */
+const SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30',
+               '11:00','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+
+const MN = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+            'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DN_L = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DN_S = ['D','S','T','Q','Q','S','S'];
+const MN_S = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function shiftMonth(d){
+  calM += d;
+  if(calM>11){ calM=0; calY++; }
+  if(calM<0) { calM=11; calY--; }
+  renderCal();
+}
+
+function renderCal(){
+  document.getElementById('calLabel').textContent = MN[calM]+' '+calY;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Cabeçalho dos dias
+  DN_S.forEach(d=>{
+    const el = document.createElement('div');
+    el.className='cal-dh'; el.textContent=d; grid.appendChild(el);
+  });
+
+  const first = new Date(calY,calM,1).getDay();
+  const days  = new Date(calY,calM+1,0).getDate();
+
+  for(let i=0;i<first;i++){
+    grid.appendChild(Object.assign(document.createElement('div'),{className:'cal-day'}));
+  }
+
+  for(let d=1;d<=days;d++){
+    const date = new Date(calY,calM,d);
+    const dow  = date.getDay();
+    const isPast= date < today;
+    const isWE  = dow===0||dow===6;
+    const el    = document.createElement('div');
+    el.textContent = d;
+
+    if(!isPast && !isWE){
+      el.className = 'cal-day avail';
+      if(date.getTime()===today.getTime()) el.classList.add('today');
+      if(selDate && selDate.getTime()===date.getTime()) el.classList.add('sel');
+      el.addEventListener('click',()=>pickDate(new Date(calY,calM,d)));
+    } else {
+      el.className = 'cal-day '+(isPast?'past':'off');
+    }
+    grid.appendChild(el);
+  }
+}
+
+function pickDate(date){
+  selDate = date; selTime = null;
+  renderCal();
+
+  const panel = document.getElementById('tsPanel');
+  panel.style.display = 'block';
+  document.getElementById('tsDate').textContent =
+    DN_L[date.getDay()+'']+', '+date.getDate()+' de '+MN_S[date.getMonth()];
+
+  const list = document.getElementById('tsList');
+  list.innerHTML = '';
+  SLOTS.forEach(t=>{
+    const s = document.createElement('div');
+    s.className = 'ts-slot';
+    s.innerHTML = `<span>${t}</span><span class="ts-dur">60 min</span>`;
+    s.addEventListener('click',()=>{
+      list.querySelectorAll('.ts-slot').forEach(x=>x.classList.remove('sel'));
+      s.classList.add('sel');
+      selTime = t;
+      document.getElementById('b13').disabled = false;
+    });
+    list.appendChild(s);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   ⚙ CONFIGURAÇÃO — cole aqui a URL do seu webhook
+   Make.com:  Módulo "Custom Webhook" → copie a URL
+   Zapier:    Trigger "Webhooks by Zapier (Catch Hook)"
+═══════════════════════════════════════════════════ */
+const WEBHOOK_URL = 'https://hook.us2.make.com/t9j9acxebwnqd8x6c3jse6ypd5iwjd5c';
+
+/* ═══════════════════════════════════════════════════
+   CONFIRMAÇÃO FINAL + ENVIO WEBHOOK
+═══════════════════════════════════════════════════ */
+
+// Monta o payload com todos os dados do formulário
+function buildPayload(){
+  const dataFmt = selDate
+    ? `${DN_L[selDate.getDay()]}, ${selDate.getDate()} de ${MN_S[selDate.getMonth()]} · ${selTime}`
+    : '';
+  const dataISO = selDate
+    ? `${selDate.getFullYear()}-${String(selDate.getMonth()+1).padStart(2,'0')}-${String(selDate.getDate()).padStart(2,'0')}`
+    : '';
+
+  return {
+    // ── Identificação ──────────────────────────────
+    nome:             document.getElementById('i-nome').value.trim(),
+    empresa:          document.getElementById('i-empresa').value.trim(),
+    cargo:            document.getElementById('i-cargo').value.trim(),
+    // ── Perfil de negócio ──────────────────────────
+    segmento:         A.s4  || '',
+    faturamento:      A.s5  || '',
+    desafio:          A.s6  || '',
+    objetivos:        M[7]  || [],
+    identidade_visual:A.s8  || '',
+    site:             A.s9  || '',
+    investimento:     A.s10 || '',
+    canal_origem:     A.s11 || '',
+    observacoes:      document.getElementById('i-obs').value.trim(),
+    // ── Reunião ────────────────────────────────────
+    reuniao_data_iso:      dataISO,
+    reuniao_horario:       selTime || '',
+    reuniao_data_formatada:dataFmt,
+    // ── Meta ───────────────────────────────────────
+    timestamp: new Date().toISOString(),
+    fonte:     'eximio-onboarding-form'
+  };
+}
+
+// Popula a tela de confirmação
+function finishLocally(){
+  const p = buildPayload();
+  document.getElementById('s-nome').textContent    = p.nome    || '—';
+  document.getElementById('s-empresa').textContent = p.empresa || '—';
+  document.getElementById('s-dt').textContent      = p.reuniao_data_formatada || '—';
+  document.getElementById('navHint').style.display = 'none';
+}
+
+// Envio principal
+async function submitForm(retry = false){
+  const errBox = document.getElementById('webhookError');
+  errBox.style.display = 'none';
+
+  const payload = buildPayload();
+  console.log('EXÍMIO — Onboarding payload:', payload);
+
+  // Se não configurou webhook, vai direto
+  if(!WEBHOOK_URL || WEBHOOK_URL === 'COLE_SUA_URL_AQUI'){
+    finishLocally();
+    goTo(14);
+    return;
+  }
+
+  // Mostra loading
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('visible');
+  document.getElementById('b13').disabled = true;
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if(!res.ok) throw new Error('HTTP '+res.status);
+
+    // Sucesso
+    overlay.classList.remove('visible');
+    finishLocally();
+    goTo(14);
+
+  } catch(err){
+    console.error('Webhook error:', err);
+    overlay.classList.remove('visible');
+    document.getElementById('b13').disabled = false;
+    errBox.style.display = 'block';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   TECLADO
+═══════════════════════════════════════════════════ */
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && cur===0) goTo(1);
+});
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+updateProgress();
+updateCounter();
+</script>
+</body>
+</html>
